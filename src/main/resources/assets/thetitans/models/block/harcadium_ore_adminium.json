@@ -1,0 +1,7 @@
+{
+	"parent":"thetitans:block/ore_block",
+	"textures": {
+		"base": "thetitans:blocks/adminium",
+		"overlay": "thetitans:blocks/harcadium"
+	}
+}

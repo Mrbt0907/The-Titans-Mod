@@ -1,0 +1,6 @@
+{
+	"parent":"block/cube_all",
+	"textures": {
+		"all": "thetitans:blocks/cut_bronze_block"
+	}
+}

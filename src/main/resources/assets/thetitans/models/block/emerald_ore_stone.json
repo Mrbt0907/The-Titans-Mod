@@ -1,0 +1,7 @@
+{
+	"parent":"thetitans:block/ore_block",
+	"textures": {
+		"base": "blocks/stone",
+		"overlay": "thetitans:blocks/emerald"
+	}
+}

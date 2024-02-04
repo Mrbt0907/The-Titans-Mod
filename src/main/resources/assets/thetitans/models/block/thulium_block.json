@@ -1,0 +1,12 @@
+{
+	"parent":"block/cube",
+	"textures": {
+		"particle": "thetitans:blocks/thulium_block_side",
+		"down": "thetitans:blocks/thulium_block_bottom",
+		"up": "thetitans:blocks/thulium_block_top",
+		"north": "thetitans:blocks/thulium_block_side",
+		"south": "thetitans:blocks/thulium_block_side",
+		"west": "thetitans:blocks/thulium_block_side",
+		"east": "thetitans:blocks/thulium_block_side"
+	}
+}
