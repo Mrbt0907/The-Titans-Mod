@@ -15,4 +15,5 @@ Head to the releases tab on the right and grab the version of the mod you want. 
 - run "gradlew setupDecompWorkspace eclipse"
 
 ## Supported Mods
-There are no officially supported mods to date.
+These mods are supported by The Titans Mod by default
+- Orespawn
