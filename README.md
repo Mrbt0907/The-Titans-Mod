@@ -2,7 +2,8 @@
 Welcome to the Titan's Mod! Explore a world full of titans, giant deities that roam the lands with little regard for players such as yourself. This mod was created by Enderman_Of_D00M and is co-developed by me!
 
 ## Dependencies
-- None
+- Orespawn (Deobfuscated)
+- Mutant Creatures 1.7.10-1.4.9
 
 ## Questions? Suggestions? Bugs?
 You can report any of these in the Issues tab, and/or place your questions and suggestions in the Discussions tab.
