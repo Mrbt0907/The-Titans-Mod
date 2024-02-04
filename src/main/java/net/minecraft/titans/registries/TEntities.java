@@ -9,7 +9,6 @@ import net.minecraft.init.Biomes;
 import net.minecraft.titans.TheTitans;
 import net.minecraft.titans.entity.animal.*;
 import net.minecraft.titans.entity.god.EntityWitherzilla;
-import net.minecraft.titans.entity.titan.EntityCreeperTitan;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -21,7 +20,6 @@ public class TEntities
 	{
 		createEntityWithEgg(EntityEndSquid.class, "end_squid", 0x000000, 0xff00ea, 128);
 		createEntityWithEgg(EntityWitherzilla.class, "witherzilla", 0x000000, 0xffffea, 1028);
-		createEntityWithEgg(EntityCreeperTitan.class, "creeper_titan", 0x05FF22, 0x101010, 1028);
 		
 		EntitySpawnPlacementRegistry.setPlacementType(EntityEndSquid.class, EntityLiving.SpawnPlacementType.IN_AIR);
 		EntityRegistry.addSpawn(EntityEndSquid.class, 5, 1, 1, TheTitans.VOID, Biomes.SKY);

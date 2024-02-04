@@ -1,12 +1,10 @@
 package net.minecraft.titans;
 
 import net.minecraft.titans.client.TitanManagerClient;
-import net.minecraft.titans.client.entity.renders.RenderCreeperTitan;
 import net.minecraft.titans.client.entity.renders.RenderWitherzilla;
 import net.minecraft.titans.entity.animal.*;
 import net.minecraft.titans.entity.god.EntityWitherzilla;
 import net.minecraft.titans.entity.render.*;
-import net.minecraft.titans.entity.titan.EntityCreeperTitan;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -40,6 +38,5 @@ public class ClientProxy extends CommonProxy
 	{
 		RenderingRegistry.registerEntityRenderingHandler(EntityEndSquid.class, manager -> new RenderEndSquid(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityWitherzilla.class, manager -> new RenderWitherzilla(manager));
-		RenderingRegistry.registerEntityRenderingHandler(EntityCreeperTitan.class, manager -> new RenderCreeperTitan(manager));
 	}
 }

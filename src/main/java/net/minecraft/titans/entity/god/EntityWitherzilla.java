@@ -47,7 +47,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	{
 		super(worldIn);
 		experienceValue = 5000000;
-		
 	}
 
 	@Override
@@ -75,6 +74,8 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1000000.0D);
 		getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(100000.0D);
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(getSizeMultiplier() * 1.5D);
+		setMaxHealth(1000000.0D);
+		setHealthD(getMaxHealthD());
 
 	}
 

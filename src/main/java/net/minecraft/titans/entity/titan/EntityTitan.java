@@ -31,6 +31,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.titans.TheTitans;
 import net.minecraft.titans.TitanConfig;
 import net.minecraft.titans.api.IMobTier;
 import net.minecraft.titans.api.ITitanBossBar;
@@ -110,19 +111,20 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IT
 	public void readEntityFromNBT(NBTTagCompound tagCompund)
 	{
 		super.readEntityFromNBT(tagCompund);
-		setHealthD(tagCompund.getDouble("healthTitan"));
-		setMaxHealth(tagCompund.getDouble("maxHealthTitan"));
-		setMaxStamina(tagCompund.getDouble("maxStamina"));
-		setStamina(tagCompund.getDouble("stamina"));
-		stage = tagCompund.getInteger("stage");
+		if (tagCompund.hasKey("healthTitan"))
+		{
+			setHealthD(tagCompund.getDouble("healthTitan"));
+			setMaxHealth(tagCompund.getDouble("maxHealthTitan"));
+			setMaxStamina(tagCompund.getDouble("maxStamina"));
+			setStamina(tagCompund.getDouble("stamina"));
+			stage = tagCompund.getInteger("stage");
+		}
 	}
 
 	public void writeEntityToNBT(NBTTagCompound tagCompound)
 	{
-		
 		tagCompound.setDouble("healthTitan", getHealthD());
 		tagCompound.setDouble("maxHealthTitan", getMaxHealthD());
-
 		tagCompound.setDouble("maxStamina", getMaxStamina());
 		tagCompound.setDouble("stamina", getStamina());
 		tagCompound.setInteger("stage", stage);
