@@ -15,3 +15,5 @@ Head to the releases tab on the right and grab the version of the mod you want. 
 
 ## Supported Mods
 There are no officially supported mods to date.
+
+All rights reserved unless otherwise explicitly given permission by the original creator.
