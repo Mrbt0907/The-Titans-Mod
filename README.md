@@ -17,5 +17,3 @@ Head to the releases tab on the right and grab the version of the mod you want. 
 ## Supported Mods
 These mods are supported by The Titans Mod by default
 - Orespawn
-
-*All rights reserved unless otherwise explicitly given permission by the original creator.*
