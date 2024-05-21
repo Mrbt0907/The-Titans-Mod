@@ -7,10 +7,14 @@ import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 
 import net.endermanofdoom.mac.interfaces.IBossBar;
+import net.endermanofdoom.mac.interfaces.IGendered;
+import net.endermanofdoom.mac.interfaces.IVariedMob;
+import net.endermanofdoom.mac.music.IMusicInteractable;
 import net.endermanofdoom.mac.util.TranslateUtil;
 import net.endermanofdoom.mac.util.chunk.ChunkLoadingUtil;
 import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mac.util.math.Vec;
+import net.endermanofdoom.mca.entity.boss.EntityBaseWither;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -52,7 +56,7 @@ import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class EntityTitan extends EntityCreature implements IMobTier, IEntityMultiPart, IBossBar
+public abstract class EntityTitan extends EntityCreature implements IMobTier, IEntityMultiPart, IBossBar, IGendered, IVariedMob, IMusicInteractable
 {
 	private static final IAttribute titanMaxHealth = new RangedAttribute(null, "titan.maxHealth", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Max Health").setShouldWatch(true);
 	private static final IAttribute titanHealth = new RangedAttribute(null, "titan.health", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Health").setShouldWatch(true);
@@ -578,6 +582,8 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IE
 				victim.attackEntityFrom((new DamageSource("other")).setDamageBypassesArmor().setDamageIsAbsolute().setDamageAllowedInCreativeMode(), 100F);
 			else if (victim instanceof EntityDragon)
 				world.newExplosion(null, victim.posX, victim.posY, victim.posZ, 6F, false, false);
+			else if (victim instanceof EntityBaseWither)
+				victim.attackEntityFrom(DamageSource.causeMobDamage(this), damage);
 			else
 				victim.attackEntityFrom(source, damage);
 			

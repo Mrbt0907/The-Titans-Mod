@@ -2,8 +2,10 @@ package net.minecraft.titans.entity.god;
 
 import java.util.List;
 
+import net.endermanofdoom.mac.enums.EnumGender;
 import net.endermanofdoom.mac.util.TranslateUtil;
 import net.endermanofdoom.mac.util.math.Maths;
+import net.endermanofdoom.mca.MCA;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -75,7 +77,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1000000.0D);
 		getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(100000.0D);
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(getSizeMultiplier() * 1.5D);
-		setMaxHealth(1000000.0D);
+		setMaxHealth(1000000000000000000D);
 		setHealthD(getMaxHealthD());
 
 	}
@@ -115,6 +117,18 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		if (world.getWorldTime() != 8000)
 			world.setWorldTime(8000);
 		
+        if (this.getHealthD() != this.getMobHealth() && this.isEntityAlive())
+        {
+    		setMaxHealth(getMobHealth());
+    		setHealthD(getMaxHealthD());
+        }
+        
+        if (this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue() != this.getMobAttack())
+        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(getMobAttack());
+
+        if (this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue() != this.getMobSpeed())
+        	this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(getMobSpeed());
+		
 		if (ticksExisted % 3 + rand.nextInt(3) == 0)
 			setCustomNameTag("\u00A7k" + TranslateUtil.translate("entity.witherzilla.name.true"));
 		else
@@ -150,8 +164,16 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 				motionZ = 0.0D;
 			}
 			
-			if (getAttackTarget() != null && !(getAttackTarget() instanceof EntityPlayer) && ticksExisted % 100 == 0)
-				doLightningAttackTo(getAttackTarget());
+			if (getAttackTarget() != null)
+			{
+				this.getMoveHelper().setMoveTo(getAttackTarget().posY, getAttackTarget().posY + getAttackTarget().getEyeHeight(), getAttackTarget().posZ, 1D);
+				this.getLookHelper().setLookPositionWithEntity(getAttackTarget(), 180, 40F);
+				
+				if (!(getAttackTarget() instanceof EntityPlayer) && ticksExisted % 20 == 0)
+				{
+					doLightningAttackTo(getAttackTarget());
+				}
+			}
 			
 			if (rand.nextInt(100) == 0)
 			{
@@ -435,6 +457,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			{
 				((EntityLivingBase)entity).setHealth(0.0F);
 				attackChoosenEntity(entity, Float.MAX_VALUE, 0, true);
+				attackChoosenEntity(entity, Float.MAX_VALUE, 0, false);
 			}
 			
 			if (!(entity instanceof EntityTitan))
@@ -673,5 +696,46 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	public ResourceLocation getBarTexture()
 	{
 		return new ResourceLocation(TheTitans.MODID, "textures/gui/titanbars/witherzilla_new.png");
+	}
+
+	public EnumGender getGender() 
+	{
+		return EnumGender.MALE;
+	}
+
+	public void setVariant(int type) {
+		
+	}
+
+	public int getVariant() {
+		return 0;
+	}
+
+	public double getMobHealth() {
+		double hp = MCA.caclculateValue(world, 300D * getSizeMultiplier() * this.getTier().getMultiplier());
+		
+		return hp;
+	}
+
+	public double getMobAttack() {
+		double hp = MCA.caclculateValue(world, 24D * getSizeMultiplier() * this.getTier().getMultiplier());
+		
+		return hp;
+	}
+
+	public double getMobSpeed() {
+		return 1;
+	}
+
+	public boolean isMusicDead() {
+		return false;
+	}
+
+	public int getMusicPriority() {
+		return 0;
+	}
+
+	public SoundEvent getMusic() {
+		return null;
 	}
 }
