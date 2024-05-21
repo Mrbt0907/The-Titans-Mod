@@ -166,13 +166,9 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			
 			if (getAttackTarget() != null)
 			{
-				this.getMoveHelper().setMoveTo(getAttackTarget().posY, getAttackTarget().posY + getAttackTarget().getEyeHeight(), getAttackTarget().posZ, 1D);
-				this.getLookHelper().setLookPositionWithEntity(getAttackTarget(), 180, 40F);
-				
-				if (!(getAttackTarget() instanceof EntityPlayer) && ticksExisted % 20 == 0)
-				{
-					doLightningAttackTo(getAttackTarget());
-				}
+				if (this.getDistance(getAttackTarget()) > getAttackTarget().width + this.width)
+				this.getMoveHelper().setMoveTo(getAttackTarget().posX, getAttackTarget().posY + getAttackTarget().getEyeHeight(), getAttackTarget().posZ, 1D);
+				this.attackEntityWithRangedAttack(getAttackTarget(), 0);
 			}
 			
 			if (rand.nextInt(100) == 0)
@@ -556,20 +552,12 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 
 	private double getHeadPosX(int p_82214_1_)
 	{
-		switch(p_82214_1_)
-		{
-			case 1:
-				return posX - 0.5D * getSizeMultiplier();
-			case 2:
-				return posX + 0.5D * getSizeMultiplier();
-			default:
-				return posX;
-		}
+		return posX;
 	}
 
 	private double getHeadPosY(int p_82208_1_)
 	{
-		return posY + 0.4D *  getSizeMultiplier();
+		return posY + 4D;
 	}
 
 	private double getHeadPosZ(int p_82213_1_)
@@ -593,8 +581,8 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	{
 		if (((target instanceof EntityTitan)) || (target.height >= 6.0F))
 		{
-			double d0 = getDistanceSq(target);
-			if (d0 < 1000.0D && rand.nextInt(20) % 20 == 0)
+			double d0 = getDistance(target);
+			if (d0 < target.width +this.width && this.ticksExisted % 20 == 0)
 				attackEntityAsMob(target);
 		}
 
