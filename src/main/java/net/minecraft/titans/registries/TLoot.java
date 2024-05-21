@@ -11,6 +11,7 @@ public class TLoot extends LootTableList
 		
 	}
 	
+	@SuppressWarnings("unused")
 	private static ResourceLocation register(String id)
 	{
 		return register(new ResourceLocation(TheTitans.MODID, id));

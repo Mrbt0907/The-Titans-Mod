@@ -2,10 +2,8 @@ package net.minecraft.titans.registries;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.titans.TheTitans;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreIngredient;
 
@@ -16,6 +14,7 @@ public class TRecipes
 
 	}
 	
+	@SuppressWarnings("unused")
 	private static void addShaped(boolean disabled, ItemStack output, String pattern, Object... inputs)
 	{
 		if (output != null && pattern != null && pattern.length() > 0 && inputs.length > 0)

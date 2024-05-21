@@ -2,7 +2,6 @@ package net.minecraft.titans.client.entity.renders;
 
 import java.util.Random;
 
-import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -10,7 +9,6 @@ import net.minecraft.client.renderer.entity.RenderLightningBolt;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.titans.TheTitans;
 import net.minecraft.titans.entity.EntityGammaLightning;
 import net.minecraft.util.ResourceLocation;
 

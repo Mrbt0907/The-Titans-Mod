@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.titans.TheTitans;
@@ -116,6 +115,7 @@ public class TBlocks
 		return final_blocks.toArray(c);
 	}
 	
+	@SuppressWarnings("unused")
 	private static void addTileEntity(String registry_name, Class<? extends TileEntity> tile)
     {
         if (tile != null)
@@ -127,12 +127,14 @@ public class TBlocks
         add(registry_name, null, block, true);
     }
     
-    private static void add(String registry_name, Block block, boolean creative_tab)
+    @SuppressWarnings("unused")
+	private static void add(String registry_name, Block block, boolean creative_tab)
     {
         add(registry_name, null, block, creative_tab);
     }
     
-    private static void add(String registry_name, String ore_dict_name, Block block)
+    @SuppressWarnings("unused")
+	private static void add(String registry_name, String ore_dict_name, Block block)
     {
         add(registry_name, ore_dict_name, block, true);
     }

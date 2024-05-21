@@ -102,6 +102,7 @@ public class NetworkHandler
 		register(packetXHandler, packetXHandler, (Side)null);
 	}
 
+	@SuppressWarnings("unused")
 	private static <T extends IMessage & IMessageHandler<T, IMessage>> void register(Class<T> packetXHandler, Side... side)
 	{
 		register(packetXHandler, packetXHandler, side);

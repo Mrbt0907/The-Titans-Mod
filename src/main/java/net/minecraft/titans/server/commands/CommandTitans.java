@@ -1,7 +1,5 @@
 package net.minecraft.titans.server.commands;
 
-import java.util.List;
-
 import net.endermanofdoom.mac.util.math.Vec3;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
