@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,7 @@ public class EntityUrLightning extends EntityGammaLightning {
 	{
 		boolean immune;
 		for (Entity target : list)
-			if (target.getDistanceSq(this) < 100.0D)
+			if (target.getDistanceSq(this) < 50.0D)
 			{
 				immune = false;
 				if (target instanceof EntityPlayer)

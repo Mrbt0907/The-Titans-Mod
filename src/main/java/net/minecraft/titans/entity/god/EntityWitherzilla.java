@@ -174,7 +174,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 				{
 					if (Maths.random(100) == 0)
 						if (!(target instanceof EntityPlayer) && target instanceof EntityLivingBase && target.isEntityAlive())
-							attackEntityWithRangedAttack((EntityLivingBase) target, 0.0F);
+							doLightningAttackTo((EntityLivingBase) target);
 				});
 			}
 			
