@@ -2,12 +2,15 @@ package net.minecraft.titans.entity.titan;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 
+import net.endermanofdoom.mac.interfaces.IBossBar;
+import net.endermanofdoom.mac.util.TranslateUtil;
+import net.endermanofdoom.mac.util.chunk.ChunkLoadingUtil;
+import net.endermanofdoom.mac.util.math.Maths;
+import net.endermanofdoom.mac.util.math.Vec;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -31,16 +34,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.titans.TheTitans;
 import net.minecraft.titans.TitanConfig;
 import net.minecraft.titans.api.IMobTier;
-import net.minecraft.titans.api.ITitanBossBar;
 import net.minecraft.titans.entity.EntityMultiPart;
 import net.minecraft.titans.registries.TSounds;
-import net.minecraft.titans.utils.ChunkLoadingUtil;
-import net.minecraft.titans.utils.Maths;
-import net.minecraft.titans.utils.Maths.Vec;
-import net.minecraft.titans.utils.TranslateUtil;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -55,7 +52,7 @@ import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class EntityTitan extends EntityCreature implements IMobTier, ITitanBossBar, IEntityMultiPart
+public abstract class EntityTitan extends EntityCreature implements IMobTier, IEntityMultiPart, IBossBar
 {
 	private static final IAttribute titanMaxHealth = new RangedAttribute(null, "titan.maxHealth", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Max Health").setShouldWatch(true);
 	private static final IAttribute titanHealth = new RangedAttribute(null, "titan.health", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Health").setShouldWatch(true);
@@ -310,7 +307,7 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IT
 	
 	protected void onCrushingEntity(AxisAlignedBB boundingBox)
 	{
-		if (boundingBox == null || Maths.speed(motionX, motionY, motionZ) <= 0.1D) return;
+		if (boundingBox == null || Maths.speedSq(motionX, motionY, motionZ) <= 0.1D) return;
 		
 		world.getEntitiesWithinAABBExcludingEntity(this, boundingBox).forEach(entity ->
 		{
@@ -869,11 +866,6 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IT
 	}
 	
 	@Override
-	public UUID getUniqueBarID() {
-		return getUniqueID();
-	}
-
-	@Override
 	public String getBarName() {
 		return getName();
 	}
@@ -896,5 +888,10 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IT
 	public double getMaxStamina()
 	{
 		return getEntityAttribute(titanMaxStamina).getAttributeValue();
+	}
+	
+	public boolean isDead()
+	{
+		return true;
 	}
 }

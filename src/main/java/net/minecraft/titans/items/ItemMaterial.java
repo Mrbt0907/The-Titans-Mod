@@ -1,4 +1,5 @@
 package net.minecraft.titans.items;
+import net.endermanofdoom.mac.util.ReflectionUtil;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
@@ -6,7 +7,6 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import net.minecraft.titans.utils.ReflectionHelper;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.EnumHelper;
@@ -67,7 +67,7 @@ public class ItemMaterial
 			ItemSword sword = ((ItemSword)items[i]); 
 			switch (key)
 			{
-				case 1: ReflectionHelper.set(ItemSword.class, sword, value, "attackDamage", "field_150934_a"); break;
+				case 1: sword.attackDamage = value; break;
 				default: sword.setMaxDamage((int)value);
 			}
 		}
@@ -77,9 +77,9 @@ public class ItemMaterial
 			ItemTool tool = ((ItemTool)items[i]); 
 			switch (key)
 			{
-				case 1: ReflectionHelper.set(ItemTool.class, tool, value, "attackDamage", "field_77865_bY"); break;
-				case 2: tool.setHarvestLevel((String)ReflectionHelper.get(ItemTool.class, tool, "toolClass"), (int)value); break;
-				case 3: ReflectionHelper.set(ItemTool.class, tool, value, "efficiency", "field_77864_a"); break;
+				case 1: ReflectionUtil.set(ItemTool.class, tool, "attackDamage", "field_77865_bY", value); break;
+				case 2: tool.setHarvestLevel((String)ReflectionUtil.get(ItemTool.class, tool, "toolClass", "toolClass"), (int)value); break;
+				case 3: ReflectionUtil.set(ItemTool.class, tool, "efficiency", "field_77864_a", value); break;
 				default: tool.setMaxDamage((int)value);
 			}
 		}
@@ -98,7 +98,7 @@ public class ItemMaterial
 		if (items[i] instanceof ItemArmor)
 		{
 			ItemArmor armorPiece = ((ItemArmor)items[i]); 
-			ReflectionHelper.set(ItemArmor.class, armorPiece, value[armorPiece.armorType.getIndex()], "damageReduceAmount", "field_77879_b");
+			ReflectionUtil.set(ItemArmor.class, armorPiece, "damageReduceAmount", "field_77879_b", value[armorPiece.armorType.getIndex()]);
 		}
 	}
 
@@ -109,23 +109,23 @@ public class ItemMaterial
 		{
 			ItemSword sword = ((ItemSword)items[i]); 
 			sword.setMaxDamage(durability);
-			ReflectionHelper.set(ItemSword.class, sword, damage, "attackDamage", "field_150934_a");
+			ReflectionUtil.set(ItemSword.class, sword, "attackDamage", "field_150934_a", damage);
 		}
 
 		else if (toolMaterial != null && items[i] instanceof ItemTool)
 		{
 			ItemTool tool = ((ItemTool)items[i]); 
 			tool.setMaxDamage(durability);
-			tool.setHarvestLevel((String)ReflectionHelper.get(ItemTool.class, tool, "toolClass"), harvestLevel);
-			ReflectionHelper.set(ItemTool.class, tool, efficiency, "efficiency", "field_77864_a");
-			ReflectionHelper.set(ItemTool.class, tool, damage, "attackDamage", "field_77865_bY");
+			tool.setHarvestLevel((String)ReflectionUtil.get(ItemTool.class, tool, "toolClass", "toolClass"), harvestLevel);
+			ReflectionUtil.set(ItemTool.class, tool, "efficiency", "field_77864_a", efficiency);
+			ReflectionUtil.set(ItemTool.class, tool, "attackDamage", "field_77865_bY", damage);
 		}
 
 		else if (armorMaterial != null && items[i] instanceof ItemArmor)
 		{
 			ItemArmor armorPiece = ((ItemArmor)items[i]); 
 			armorPiece.setMaxDamage(durability);
-			ReflectionHelper.set(ItemArmor.class, armorPiece, armor[armorPiece.armorType.getIndex()], "damageReduceAmount", "field_77879_b");
+			ReflectionUtil.set(ItemArmor.class, armorPiece, "damageReduceAmount", "field_77879_b", armor[armorPiece.armorType.getIndex()]);
 		}
 	}
 

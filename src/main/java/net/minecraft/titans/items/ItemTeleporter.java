@@ -1,11 +1,11 @@
 package net.minecraft.titans.items;
+import net.endermanofdoom.mac.util.TranslateUtil;
+import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.titans.CommonProxy;
 import net.minecraft.titans.TheTitans;
-import net.minecraft.titans.utils.Maths;
-import net.minecraft.titans.utils.TranslateUtil;
 import net.minecraft.titans.world.TeleporterNull;
 import net.minecraft.titans.world.WorldProviderVoid;
 import net.minecraft.util.ActionResult;
@@ -41,7 +41,7 @@ public class ItemTeleporter extends Item
 						{
 							playerIn.sendMessage(TranslateUtil.translateChatMult("dialog.teleporter.fail.c", 10, playerIn.getName()));
 						}
-						else if (Maths.distance(playerIn.posX, playerIn.posZ, 0, 0) > 5.0D)
+						else if (Maths.distanceSq(playerIn.posX, playerIn.posZ, 0, 0) > 5.0D)
 						{
 							playerIn.sendMessage(TranslateUtil.translateChatMult("dialog.teleporter.fail.b", 10, playerIn.getName()));
 							playerIn.timeUntilPortal = 20;

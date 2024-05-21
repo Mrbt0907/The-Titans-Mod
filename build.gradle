@@ -1,51 +1,54 @@
-buildscript {
-    repositories {
+buildscript
+{
+    repositories
+    {
         jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
+		maven { url = "https://files.minecraftforge.net/maven" }
+	}
+	dependencies {classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'}
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+project.mkdir "libs"
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
 
 version = "0.6-indev"
 group= "net.minecraft.titans"
 archivesBaseName = "The Titans Mod"
 
-sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
 
-minecraft {
+minecraft
+{
     version = "1.12.2-14.23.5.2847"
-    runDir = "run"    
     mappings = "snapshot_20171003"
-    replace '${version}', project.version
+    runDir = "run"
+    makeObfSourceJar = false
 }
 
-repositories {
-	maven {
-    	name = "Progwml6 maven"
-    	url = "https://dvs1.progwml6.com/files/maven/"
-  }
+repositories
+{
+	maven
+	{
+		name 'Progwml6'
+		url "http://dvs1.progwml6.com/files/maven"
+	}
 }
 
-dependencies {
-	deobfProvided "mezz.jei:jei_1.12.2:4.15.0.293:api"
- 	runtime "mezz.jei:jei_1.12.2:4.15.0.293"
+dependencies
+{
+   runtime "mezz.jei:jei_1.12.2:4.13.1.225"
 }
 
-processResources {
+processResources
+{
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
-    from(sourceSets.main.resources.srcDirs) {
+    from(sourceSets.main.resources.srcDirs)
+    {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+    from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
+   // rename '(.+_at.cfg)', 'META-INF/$1'
 }
+//jar { manifest{attributes 'FMLAT': 'ender_at.cfg'} }

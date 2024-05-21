@@ -4,12 +4,12 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 
+import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.titans.utils.Maths;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -45,9 +45,9 @@ public class EntityMultiPart extends MultiPartEntityPart
 		world.getEntitiesInAABBexcluding(this, getEntityBoundingBox(), new Predicate<Entity>() { @Override public boolean apply(Entity input) {return input instanceof IProjectile;}}).forEach(entity -> 
 		{
 			if (entity instanceof EntityArrow)
-				attackEntityFrom(DamageSource.causeArrowDamage(((EntityArrow)entity), ((EntityArrow)entity).shootingEntity != null ? ((EntityArrow)entity).shootingEntity : ((EntityArrow)entity)), (float) (Maths.speed(entity.motionX, entity.motionY, entity.motionZ) * ((EntityArrow)entity).getDamage()));
+				attackEntityFrom(DamageSource.causeArrowDamage(((EntityArrow)entity), ((EntityArrow)entity).shootingEntity != null ? ((EntityArrow)entity).shootingEntity : ((EntityArrow)entity)), (float) (Maths.speedSq(entity.motionX, entity.motionY, entity.motionZ) * ((EntityArrow)entity).getDamage()));
 			else
-				attackEntityFrom(DamageSource.GENERIC, (float) Maths.speed(entity.motionX, entity.motionY, entity.motionZ) * 2.0F);
+				attackEntityFrom(DamageSource.GENERIC, (float) Maths.speedSq(entity.motionX, entity.motionY, entity.motionZ) * 2.0F);
 			entity.setDead();
 		});
 	}

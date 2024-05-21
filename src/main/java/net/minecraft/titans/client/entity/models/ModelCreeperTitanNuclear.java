@@ -2,10 +2,10 @@ package net.minecraft.titans.client.entity.models;
 
 import com.google.common.collect.ImmutableList;
 
+import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.titans.utils.Maths;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -755,7 +755,7 @@ public class ModelCreeperTitanNuclear extends ModelBase
     @Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
-        float mult = (float) Math.min(Maths.speed(entityIn.motionX, entityIn.motionY, entityIn.motionZ) * 0.4F, 1.0F);
+        float mult = (float) Math.min(Maths.speedSq(entityIn.motionX, entityIn.motionY, entityIn.motionZ) * 0.4F, 1.0F);
         float head_pitch = (headPitch * 0.017453292F), head_yaw = (netHeadYaw * 0.017453292F), right_swing =  MathHelper.cos(limbSwing * 0.6662F) * 0.6F * limbSwingAmount * mult, left_swing = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.6F * limbSwingAmount * mult;
         
     	setRotateAngle(Head, head_pitch * 0.5F, head_yaw * 0.5F, 0.0F);

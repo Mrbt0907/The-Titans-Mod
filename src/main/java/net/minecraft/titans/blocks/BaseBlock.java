@@ -2,13 +2,13 @@ package net.minecraft.titans.blocks;
 
 import java.util.Random;
 
+import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.titans.TheTitans;
-import net.minecraft.titans.utils.Maths;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;

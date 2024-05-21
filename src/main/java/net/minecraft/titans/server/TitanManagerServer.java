@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.endermanofdoom.mac.util.FileUtil;
+import net.endermanofdoom.mac.util.TranslateUtil;
+import net.endermanofdoom.mac.util.math.Vec3;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -25,9 +28,6 @@ import net.minecraft.titans.manager.TitanManager;
 import net.minecraft.titans.network.EnumPackets;
 import net.minecraft.titans.network.NetworkHandler;
 import net.minecraft.titans.registries.TSounds;
-import net.minecraft.titans.utils.FileUtil;
-import net.minecraft.titans.utils.TranslateUtil;
-import net.minecraft.titans.utils.Maths.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 

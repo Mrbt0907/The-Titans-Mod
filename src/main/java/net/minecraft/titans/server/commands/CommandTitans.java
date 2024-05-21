@@ -1,6 +1,8 @@
 package net.minecraft.titans.server.commands;
 
 import java.util.List;
+
+import net.endermanofdoom.mac.util.math.Vec3;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -9,8 +11,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.titans.CommonProxy;
 import net.minecraft.titans.manager.EnumEvents;
 import net.minecraft.titans.manager.EventObject;
-import net.minecraft.titans.utils.Maths.Vec3;
-import net.minecraft.titans.utils.ReflectionHelper;
 
 public class CommandTitans extends CommandBase
 {
@@ -38,16 +38,6 @@ public class CommandTitans extends CommandBase
 					if (exists(args, 1))
 						switch(args[1].toLowerCase())
 						{
-							case "class":
-								if (exists(args, 2))
-								{
-									List<String> found = ReflectionHelper.view(args[2]);
-									for (String line : found)
-										say(sender, "success", line);
-								}
-								else
-									say(sender, "debug.class.usage");
-								break;
 							case "manager":
 								if (exists(args, 2))
 									switch(args[2].toLowerCase())

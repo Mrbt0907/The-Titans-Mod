@@ -7,7 +7,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.titans.TheTitans;
-import net.minecraft.titans.client.gui.GuiTitanHud;
 import net.minecraft.titans.manager.EventObject;
 import net.minecraft.titans.manager.TitanManager;
 import net.minecraft.titans.network.EnumPackets;
@@ -18,12 +17,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 public class TitanManagerClient extends TitanManager
 {
 	private final Minecraft mc;
-	public final GuiTitanHud inGameGui;
 	
 	public TitanManagerClient()
 	{
 		mc = Minecraft.getMinecraft();
-		inGameGui = new GuiTitanHud(mc);
 		TheTitans.debug("Initialized Titan Manager for Client");
 	}
 	
@@ -50,10 +47,6 @@ public class TitanManagerClient extends TitanManager
 	
 	public void tickGui(Phase phase, float delta)
 	{
-		if (phase.equals(Phase.START))
-			inGameGui.tickPre(delta);
-		else
-			inGameGui.tickPost(delta);
 	}
 	
 	@Override

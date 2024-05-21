@@ -25,7 +25,6 @@ import net.minecraft.titans.network.NetworkHandler;
 import net.minecraft.titans.registries.*;
 import net.minecraft.titans.server.TitanManagerServer;
 import net.minecraft.titans.server.commands.CommandTitans;
-import net.minecraft.titans.utils.ReflectionHelper;
 import net.minecraft.titans.world.WorldProviderVoid;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.DimensionManager;
@@ -43,12 +42,12 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid=TheTitans.MODID, name=TheTitans.MODNAME, version=TheTitans.VERSION, acceptedMinecraftVersions="[1.12.2]")
+@Mod(modid=TheTitans.MODID, name=TheTitans.MODNAME, version=TheTitans.VERSION, acceptedMinecraftVersions="[1.12.2]", dependencies="required-after:mac@[2.6,)")
 public class TheTitans 
 {
 	public static final String MODNAME = "The Titans Mod";
 	public static final String MODID = "thetitans";
-	public static final String VERSION = "0.6-indev";
+	public static final String VERSION = "0.61-indev";
 	public static final String CLIENT = "net.minecraft.titans.ClientProxy";
 	public static final String SERVER = "net.minecraft.titans.CommonProxy";
 	@SidedProxy(clientSide=CLIENT, serverSide=SERVER)
@@ -80,13 +79,6 @@ public class TheTitans
 		MinecraftForge.EVENT_BUS.register(TItems.class);
 		MinecraftForge.EVENT_BUS.register(TBiomes.class);
 		
-		
-		
-		ReflectionHelper.set(RangedAttribute.class, (RangedAttribute)SharedMonsterAttributes.MAX_HEALTH, Double.MAX_VALUE, "maximumValue", "field_111118_b");
-		ReflectionHelper.set(RangedAttribute.class, (RangedAttribute)SharedMonsterAttributes.ATTACK_DAMAGE, Double.MAX_VALUE, "maximumValue", "field_111118_b");
-		ReflectionHelper.set(RangedAttribute.class, (RangedAttribute)SharedMonsterAttributes.ARMOR, Double.MAX_VALUE, "maximumValue", "field_111118_b");
-		ReflectionHelper.set(RangedAttribute.class, (RangedAttribute)SharedMonsterAttributes.ARMOR_TOUGHNESS, Double.MAX_VALUE, "maximumValue", "field_111118_b");
-
 		DimensionManager.registerDimension(DIMENSION_VOID_ID, DIMENSION_VOID);
 		//DimensionManager.registerDimension(DIMENSION_NOWHERE_ID, DIMENSION_NOWHERE);
 		

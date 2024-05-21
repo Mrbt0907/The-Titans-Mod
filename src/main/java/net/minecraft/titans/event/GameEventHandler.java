@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import net.endermanofdoom.mac.util.TranslateUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -18,7 +19,6 @@ import net.minecraft.titans.TheTitans;
 import net.minecraft.titans.entity.EntityMultiPart;
 import net.minecraft.titans.entity.god.EntityWitherzilla;
 import net.minecraft.titans.entity.titan.EntityTitan;
-import net.minecraft.titans.utils.TranslateUtil;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;

@@ -1,5 +1,6 @@
 package net.minecraft.titans.entity.monster;
 
+import net.endermanofdoom.mac.util.TranslateUtil;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -7,7 +8,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.titans.api.EnumMobTier;
 import net.minecraft.titans.api.IMobTier;
 import net.minecraft.titans.api.IVariedMob;
-import net.minecraft.titans.utils.TranslateUtil;
 import net.minecraft.world.World;
 
 public class EntityZombieVariant extends EntityZombie implements IVariedMob, IMobTier

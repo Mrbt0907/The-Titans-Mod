@@ -4,7 +4,6 @@ import net.minecraft.titans.registries.TEntities;
 import net.minecraft.titans.registries.TRecipes;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.titans.server.TitanManagerServer;
-import net.minecraft.titans.utils.ChunkLoadingUtil;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -15,7 +14,6 @@ public class CommonProxy
 	
 	public void preInit(FMLPreInitializationEvent e)
 	{
-		ChunkLoadingUtil.preInit();
 		TEntities.registerEntity();
 	}
 	

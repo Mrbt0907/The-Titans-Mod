@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.endermanofdoom.mac.interfaces.IBossBar;
+import net.endermanofdoom.mac.util.TranslateUtil;
+import net.endermanofdoom.mac.util.chunk.ChunkUtils;
+import net.endermanofdoom.mac.util.math.Maths;
+import net.endermanofdoom.mac.util.math.Vec3;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.titans.TheTitans;
-import net.minecraft.titans.api.ITitanBossBar;
 import net.minecraft.titans.network.EnumPackets;
 import net.minecraft.titans.network.NetworkHandler;
-import net.minecraft.titans.utils.ChunkUtils;
-import net.minecraft.titans.utils.Maths;
-import net.minecraft.titans.utils.Maths.Vec3;
-import net.minecraft.titans.utils.TranslateUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class EventObject implements ITitanBossBar
+public class EventObject implements IBossBar
 {
 	private UUID uuid;
 	private int type;
@@ -151,7 +151,7 @@ public class EventObject implements ITitanBossBar
 			{
 				boolean contains = players.contains(player);
 				
-				if (Maths.distance(player.posX, player.posY, player.posZ, pos) <= this.distance)
+				if (Maths.distanceSq(player.posX, player.posY, player.posZ, pos) <= this.distance)
 				{
 					if (!contains)	
 						players.add(player);
@@ -425,14 +425,14 @@ public class EventObject implements ITitanBossBar
 	}
 
 	@Override
-	public UUID getUniqueBarID()
-	{
-		return getUniqueID();
-	}
-
-	@Override
 	public String getBarName()
 	{
 		return getName();
+	}
+
+	@Override
+	public boolean isDead()
+	{
+		return isDead;
 	}
 }

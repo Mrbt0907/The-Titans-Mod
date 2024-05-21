@@ -1,6 +1,9 @@
 package net.minecraft.titans.entity.god;
 
 import java.util.List;
+
+import net.endermanofdoom.mac.util.TranslateUtil;
+import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -23,8 +26,6 @@ import net.minecraft.titans.entity.EntityMultiPart;
 import net.minecraft.titans.entity.titan.EntityTitan;
 import net.minecraft.titans.registries.TItems;
 import net.minecraft.titans.registries.TSounds;
-import net.minecraft.titans.utils.Maths;
-import net.minecraft.titans.utils.TranslateUtil;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
