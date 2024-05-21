@@ -49,6 +49,6 @@ processResources
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
     from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
-   // rename '(.+_at.cfg)', 'META-INF/$1'
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
-//jar { manifest{attributes 'FMLAT': 'ender_at.cfg'} }
+jar { manifest{attributes 'FMLAT': 'ender_at.cfg'} }

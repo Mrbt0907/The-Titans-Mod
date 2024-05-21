@@ -6,7 +6,6 @@ import java.util.List;
 import net.endermanofdoom.mac.enums.EnumGender;
 import net.endermanofdoom.mac.util.TranslateUtil;
 import net.endermanofdoom.mac.util.math.Maths;
-import net.endermanofdoom.mca.MCA;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -709,13 +708,13 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	}
 
 	public double getMobHealth() {
-		double hp = MCA.caclculateValue(world, 300D * getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = 300D * getSizeMultiplier() * this.getTier().getMultiplier();
 		
 		return hp;
 	}
 
 	public double getMobAttack() {
-		double hp = MCA.caclculateValue(world, 24D * getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = 24D * getSizeMultiplier() * this.getTier().getMultiplier();
 		
 		return hp;
 	}
