@@ -1,5 +1,6 @@
 package net.minecraft.titans.entity.god;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.endermanofdoom.mac.util.TranslateUtil;
@@ -22,7 +23,9 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.titans.TheTitans;
 import net.minecraft.titans.api.EnumMobTier;
+import net.minecraft.titans.entity.EntityGammaLightning;
 import net.minecraft.titans.entity.EntityMultiPart;
+import net.minecraft.titans.entity.EntityUrLightning;
 import net.minecraft.titans.entity.titan.EntityTitan;
 import net.minecraft.titans.registries.TItems;
 import net.minecraft.titans.registries.TSounds;
@@ -150,7 +153,18 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 				motionZ = 0.0D;
 			}
 			
-			if (getAttackTarget() != null && !(getAttackTarget() instanceof EntityPlayer) && ticksExisted % 100 == 0)
+			if (ticksExisted % 10 == 0)
+			{
+				List<Entity> targets = new ArrayList<Entity>(world.loadedEntityList);
+				targets.forEach(target ->
+				{
+					if (Maths.random(100) == 0)
+						if (!(target instanceof EntityPlayer) && target.isEntityAlive() && target.canBeAttackedWithItem())
+							doLightningAttackTo(target);
+				});
+			}
+			
+			if (getAttackTarget() != null && !(getAttackTarget() instanceof EntityPlayer) && ticksExisted % 20 == 0)
 				doLightningAttackTo(getAttackTarget());
 			
 			if (rand.nextInt(100) == 0)
@@ -183,7 +197,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			}
 			
 			
-			if (rand.nextInt(50) == 0 && ticksTalked == 0L)
+			if (rand.nextInt(250) == 0 && ticksTalked == 0L)
 				world.playerEntities.forEach(player -> onQuote(player, 4, world.provider.getDimension() == TheTitans.DIMENSION_VOID_ID ? stage : stage + 2));
 			
 		}
@@ -440,7 +454,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			if (!(entity instanceof EntityTitan))
 				entity.motionY += 0.5D;
 			
-			world.addWeatherEffect(new EntityLightningBolt(world, entity.posX, entity.posY, entity.posZ, false));
+			world.spawnEntity(new EntityUrLightning(world, entity.posX, entity.posY, entity.posZ, false));
 			shakeNearbyPlayerCameras(10D);
 		}
 	}

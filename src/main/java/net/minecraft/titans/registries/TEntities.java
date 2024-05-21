@@ -2,7 +2,8 @@ package net.minecraft.titans.registries;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.titans.TheTitans;
-import net.minecraft.titans.entity.god.EntityWitherzilla;
+import net.minecraft.titans.entity.*;
+import net.minecraft.titans.entity.god.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -13,6 +14,8 @@ public class TEntities
 	public static void registerEntity()
 	{
 		createEntityWithEgg(EntityWitherzilla.class, "witherzilla", 0x000000, 0xffffea, 1028);
+		createEntity(EntityGammaLightning.class, "gamma_lightning", 128);
+		createEntity(EntityUrLightning.class, "ur_lightning", 128);
 	}
 	
 	public static void createEntityWithEgg(Class<? extends Entity> entityClass, String entityName, int primary, int secondary, int updateDistance)
