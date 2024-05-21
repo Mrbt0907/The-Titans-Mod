@@ -36,7 +36,6 @@ public class ClientProxy extends CommonProxy
 	
 	public void renderEntities()
 	{
-		RenderingRegistry.registerEntityRenderingHandler(EntityEndSquid.class, manager -> new RenderEndSquid(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityWitherzilla.class, manager -> new RenderWitherzilla(manager));
 	}
 }
