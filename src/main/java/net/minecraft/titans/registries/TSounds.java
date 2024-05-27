@@ -115,6 +115,7 @@ public class TSounds {
 		register("titan.skeleton.beginmove");
 		register("titan.skeleton.getup");
 		register("titan.skeleton.bonecrunch");
+		register("witherzilla.theme");
 		register("witherzilla.spawn");
 		register("witherzilla.living");
 		register("witherzilla.grunt");

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.endermanofdoom.mac.enums.EnumGender;
+import net.endermanofdoom.mac.music.IMusicInteractable;
 import net.endermanofdoom.mac.util.TranslateUtil;
 import net.endermanofdoom.mac.util.math.Maths;
 import net.minecraft.entity.Entity;
@@ -51,6 +52,8 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	{
 		super(worldIn);
 		experienceValue = 5000000;
+		if (worldIn != null && worldIn.isRemote)
+			net.endermanofdoom.mac.internal.music.MusicManager.addMusicInteractable((IMusicInteractable) this);
 	}
 
 	@Override
@@ -728,10 +731,10 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	}
 
 	public int getMusicPriority() {
-		return 0;
+		return 10000;
 	}
 
 	public SoundEvent getMusic() {
-		return null;
+		return TSounds.get("witherzilla.theme");
 	}
 }
