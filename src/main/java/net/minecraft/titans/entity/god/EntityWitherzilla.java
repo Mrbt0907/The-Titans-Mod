@@ -113,6 +113,11 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		return isInOmegaForm() ? 512.0F : 256.0F;
 	}
 	
+    public void addVelocity(double x, double y, double z) 
+    {
+    	
+    }
+	
 	public void onLivingUpdate()
 	{
 		super.onLivingUpdate();
@@ -143,6 +148,8 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			WorldServer worldserver = (WorldServer) world;
 			WorldInfo worldinfo = worldserver.getWorldInfo();
 			motionY *= 0.9D;
+			if (motionY > 1)
+				motionY = 1;
 			noClip = true;
 			setNoGravity(true);
 			
