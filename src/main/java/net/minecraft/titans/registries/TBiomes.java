@@ -18,7 +18,7 @@ public class TBiomes {
 	public static void register(RegistryEvent.Register<Biome> event)
     {
 		registry = event;
-		add("void", BIOME_VOID, BiomeType.WARM, 100);
+		add("void", BIOME_VOID, BiomeType.WARM, 0);
 		registry = null;
     }
 	
