@@ -45,12 +45,6 @@ public class TItems
 	public static final ItemMaterial toolMaterialHellsite = new ItemMaterial("hellsite", 19, 225000, 960.0F, 34996.0F, 40);
 	public static final ItemMaterial toolMaterialHarcadium = new ItemMaterial("harcadium", 17, 75000, 120.0F, 14996.0F, 30);
 	
-	public static final Item MUSKET = new Item();
-	public static final Item POWER_CELL = new Item();
-	public static final Item DIAMOND_CORE = new Item();
-	public static final Item DRAGON_SCALE = new Item();
-	public static final Item END_BARNICLE = new Item();
-	
 	public static final Item ultimaBlade = new BaseTitanSword(toolMaterialOmni);
 	public static final Item optimaAxe = new BaseTitanSword(toolMaterialOmni);
 	public static final Item adamantiumSword = new BaseTitanSword(toolMaterialAdamantium);
@@ -113,11 +107,6 @@ public class TItems
 	{
 		TheTitans.debug("Registering items...");
 		registry = event;
-		add("musket", MUSKET, TheTitans.TAB_COMBAT);
-		add("power_cell", POWER_CELL, TheTitans.TAB_COMBAT);
-		add("diamond_core", DIAMOND_CORE, TheTitans.TAB_ITEMS);
-		add("dragon_scale", DRAGON_SCALE, TheTitans.TAB_ITEMS);
-		add("end_barnicle", END_BARNICLE, TheTitans.TAB_ITEMS);
 		
 		add("ultima_blade", ultimaBlade, TheTitans.TAB_COMBAT);
 		add("optima_axe", optimaAxe, TheTitans.TAB_COMBAT);

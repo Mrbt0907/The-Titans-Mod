@@ -1,83 +1,45 @@
 package net.minecraft.titans.registries;
 
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.item.ItemStack;
+import net.endermanofdoom.mac.registry.AbstractRecipeRegistry;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.titans.TheTitans;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.OreIngredient;
 
-public class TRecipes 
+public class TRecipes extends AbstractRecipeRegistry
 {
-	public static void postInit()
-	{
-
-	}
+	public static final TRecipes INSTANCE = new TRecipes(TheTitans.MODID);
 	
-	@SuppressWarnings("unused")
-	private static void addShaped(boolean disabled, ItemStack output, String pattern, Object... inputs)
+	private TRecipes(String modid)
 	{
-		if (output != null && pattern != null && pattern.length() > 0 && inputs.length > 0)
-		{
-			if (disabled)
-			{
-				TheTitans.debug("Recipe " + output.getItem().getRegistryName().getResourceDomain() + ":" + output.getItem().getRegistryName().getResourcePath() + " is disabled. Skipping...");
-				return;
-			}
-			
-			Object[] args = null;
-			List<Character> count = new ArrayList<Character>();
-			int in = 0; int index = 0; Character c; String[] s = {"", null, null};
-			
-			for (int i = 0; i < pattern.length(); i++)
-			{
-				c = pattern.charAt(i);
-				
-				if (c.equals(','))
-				{
-					index++;
-					in = 0;
-					s[index] = "";
-				}
-				else if (in < 3)
-				{
-					s[index] += c;
-					if (!c.equals(' ') && !count.contains(c))
-						count.add(c);
-					in++;
-				}
-			}
-			
-			if (count.size() <= 0)
-			{
-				TheTitans.error("Pattern returned null for recipe " + output.getItem().getRegistryName().getResourceDomain() + ":" + output.getItem().getRegistryName().getResourcePath() + ".  Skipping recipe...");
-				return;
-			}
-			
-			in = 0;
-			for (String str : s)
-				if (str != null)
-					in++;
-			
-			args = new Object[(count.size() * 2) + in];
-			for (int i = 0; i < 3; i++)
-				if (s[i] != null)
-					args[i] = s[i];
-			
-			for (int i = 0; i < inputs.length && i < count.size(); i++)
-			{
-				args[in] = count.get(i);
-				if (inputs[i] instanceof String)
-					args[in + 1] = new OreIngredient(inputs[i].toString());
-				else
-					args[in + 1] = inputs[i];
-				in += 2;
-			}
-			
-			TheTitans.debug("Adding shaped recipe for "  + output.getItem().getRegistryName().getResourceDomain() + ":" + output.getItem().getRegistryName().getResourcePath());
-			GameRegistry.addShapedRecipe(output.getItem().getRegistryName(), null, output, args);
-		}
-		else
-			TheTitans.error("Recipe is missing parameters");
+		super(modid);
+	}
+
+	@Override
+	public void init() {}
+	
+	@Override
+	public void register()
+	{
+		addShapedRecipe(TBlocks.harcadium_ore[0], "hb_to_hi", "000,000,000", TItems.harcadium);
+		addShapelessRecipe(TItems.harcadium, 9, "hi_to_hb", TBlocks.harcadium_ore[0]);
+		addShapedRecipe(TItems.harcadium, "hi_to_hn", "000,000,000", TItems.harcadiumNugget);
+		addShapelessRecipe(TItems.harcadiumNugget, 9, "hn_to_hi", TItems.harcadium);
+		addShapedRecipe(TItems.harcadiumNugget, "hn_to_hw", "000,000,000", TItems.harcadiumWafer);
+		addShapelessRecipe(TItems.harcadiumWafer, 9, "hw_to_hn", TItems.harcadiumNugget);
+		addShapedRecipe(TItems.harcadiumWafer, "hw_to_hwl", "000,000,000", TItems.harcadiumWaflet);
+		addShapelessRecipe(TItems.harcadiumWaflet, 9, "hwl_to_hw", TItems.harcadiumWafer);
+
+		String material = "harcadium";
+		Item item = TItems.harcadium;
+		
+		addShapedRecipe(TItems.harcadiumTools[0], material + "_pickaxe", "000, 1 , 1 ", item, Items.DIAMOND);
+		addShapedRecipe(TItems.harcadiumTools[1], material + "_axe", "00,01, 1", item, Items.DIAMOND);
+		addShapedRecipe(TItems.harcadiumTools[2], material + "_shovel", "0,1,1", item, Items.DIAMOND);
+		addShapedRecipe(TItems.harcadiumTools[3], material + "_hoe", "00, 1, 1", item, Items.DIAMOND);
+		addShapedRecipe(TItems.harcadiumTools[4], material + "_sword", "0,0,1", item, Items.DIAMOND);
+		addShapedRecipe(TItems.harcadiumArmorSet[0], material + "_helmet", "000,0 0", item);
+		addShapedRecipe(TItems.harcadiumArmorSet[1], material + "_chestplate", "0 0,000,000", item);
+		addShapedRecipe(TItems.harcadiumArmorSet[2], material + "_leggings", "000,0 0,0 0", item);
+		addShapedRecipe(TItems.harcadiumArmorSet[3], material + "_boots", "0 0,0 0", item);
 	}
 }

@@ -1,7 +1,6 @@
 package net.minecraft.titans;
 
 import net.minecraft.titans.registries.TEntities;
-import net.minecraft.titans.registries.TRecipes;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.titans.server.TitanManagerServer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -24,6 +23,5 @@ public class CommonProxy
 	
 	public void postInit(FMLPostInitializationEvent e) 
 	{
-		TRecipes.postInit();
 	}
 }

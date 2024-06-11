@@ -1,6 +1,6 @@
 {
 	"parent": "item/handheld",
 	"textures": {
-		"layer0": "thetitans:items/ruby_sword"
+		"layer0": "thetitans:items/hellsite"
 	}
 }
