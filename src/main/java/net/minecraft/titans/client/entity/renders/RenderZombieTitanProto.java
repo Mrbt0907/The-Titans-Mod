@@ -2,7 +2,6 @@ package net.minecraft.titans.client.entity.renders;
 
 import net.minecraft.client.model.ModelZombie;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.titans.entity.boss.EntityZombieTitanProto;
 import net.minecraft.util.ResourceLocation;
@@ -10,22 +9,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderZombieTitanProto extends RenderBiped<EntityZombieTitanProto>
+public class RenderZombieTitanProto extends RenderPreTitan<EntityZombieTitanProto>
 {
     public RenderZombieTitanProto(RenderManager p_i47204_1_)
     {
         super(p_i47204_1_, new ModelZombie(), 0.5F);
-    }
-
-    /**
-     * Allows the render to do state modifications necessary before the model is rendered.
-     */
-    protected void preRenderCallback(EntityZombieTitanProto entitylivingbaseIn, float partialTickTime)
-    {
-        float f = 16F;
-        GlStateManager.scale(f, f, f);
-        this.shadowSize = 0.5F * f;
-        super.preRenderCallback(entitylivingbaseIn, partialTickTime);
     }
 
     protected void applyRotations(EntityZombieTitanProto entityLiving, float p_77043_2_, float rotationYaw, float partialTicks)
@@ -48,4 +36,9 @@ public class RenderZombieTitanProto extends RenderBiped<EntityZombieTitanProto>
     {
         return new ResourceLocation("textures/entity/zombie/zombie.png");
     }
+
+	public boolean shouldSpecialRender(EntityZombieTitanProto titan) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

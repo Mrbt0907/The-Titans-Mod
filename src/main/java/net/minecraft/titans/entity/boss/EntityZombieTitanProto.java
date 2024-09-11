@@ -1,25 +1,36 @@
 package net.minecraft.titans.entity.boss;
 
 import net.endermanofdoom.mca.MCA;
+import net.endermanofdoom.mca.world.MCAWorldData;
 import net.minecraft.block.Block;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 public class EntityZombieTitanProto extends EntityPreTitan{
 
 	public EntityZombieTitanProto(World worldIn) {
 		super(worldIn);
-		setSize(8F, 32F);
 		this.experienceValue = 25000;
 	}
 	
+    public void ignite()
+    {
+    	super.ignite();
+    	int invul = 380;
+		if (MCAWorldData.progress.getBoolean("postMoWithersSuperBoss"))
+			invul += 400;
+    	
+        this.setInvulTime(invul);
+    	playSound(SoundEvents.ENTITY_ZOMBIE_AMBIENT, 10F, 1F);
+    }
+	
 	protected SoundEvent getAmbientSound()
 	{
-		return TSounds.get("titan.zombie.living");
+		return this.getInvulTime() > 600 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_AMBIENT : TSounds.get("titan.zombie.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
@@ -39,26 +50,18 @@ public class EntityZombieTitanProto extends EntityPreTitan{
 
 	public double getMobHealth() 
 	{
-		double hp = MCA.caclculateValue(world, 7000000D);
+		double hp = MCA.caclculateValue(world, 28000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 		
 		if (world.playerEntities.size() > 1)
 			hp *= world.playerEntities.size();
 		
-		return hp;
+		return hp <= 20 ? 20 : hp;
 	}
 
 	public double getMobAttack() 
 	{
-		EnumDifficulty diff = world.getDifficulty();
-		
-		double attack = 14000D;
-		
-		if (diff == EnumDifficulty.NORMAL)
-			attack *= 1.5D;
-		
-		if (diff == EnumDifficulty.HARD)
-			attack *= 2D;
-		
+		double attack = MCA.caclculateValue(world, 140D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+
 		return attack;
 	}
 
@@ -69,6 +72,22 @@ public class EntityZombieTitanProto extends EntityPreTitan{
     
 	public int[] getBarColor() 
 	{
-		return new int[] {0, 200, 25, 0, 0, 0};
+		return new int[] {0, 200, 50, 0, 0, 0};
+	}
+
+	@Override
+	public float getSizeMultiplier() 
+	{
+		float perc = 0.04F;
+
+		if (MCAWorldData.progress.getBoolean("postMoWithersSuperBoss"))
+			perc /= 2F;
+		
+		float size = this.getInvulTime() > 0 ? 16F - ((this.getInvulTime() * perc) <= 1F ? 1F :  (this.getInvulTime() * perc)) : 16F;
+
+		if (MCAWorldData.progress.getBoolean("postMoWithersSuperBoss"))
+			size *= 2F;
+		
+		return size;
 	}
 }
