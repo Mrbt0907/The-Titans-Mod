@@ -9,7 +9,7 @@ import net.endermanofdoom.mac.interfaces.IGendered;
 import net.endermanofdoom.mac.interfaces.IVariedMob;
 import net.endermanofdoom.mac.music.IMusicInteractable;
 import net.endermanofdoom.mac.util.TranslateUtil;
-import net.endermanofdoom.mac.util.chunk.ChunkLoadingUtil;
+import net.endermanofdoom.mac.util.chunk.MobChunkLoader;
 import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mac.util.math.Vec;
 import net.minecraft.block.state.IBlockState;
@@ -186,11 +186,11 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IE
 				maxHurtResistantTime = 5;
 			else if (!isStunned && maxHurtResistantTime != 25)
 				maxHurtResistantTime = 25;
-			
-			if (isEntityAlive())
-				ChunkLoadingUtil.updateLoaded(this);
-			else
-				ChunkLoadingUtil.stopLoading(this);
+
+				if (isEntityAlive())
+					MobChunkLoader.updateLoaded(this);
+				else
+					MobChunkLoader.stopLoading(this);
 			
 			if (getAttackTarget() != null)
 			{

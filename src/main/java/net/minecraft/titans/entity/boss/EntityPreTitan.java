@@ -11,6 +11,7 @@ import net.endermanofdoom.mac.interfaces.IGendered;
 import net.endermanofdoom.mac.interfaces.IMobTier;
 import net.endermanofdoom.mac.interfaces.IVariedMob;
 import net.endermanofdoom.mac.music.IMusicInteractable;
+import net.endermanofdoom.mac.util.chunk.MobChunkLoader;
 import net.endermanofdoom.mca.EnumSoundType;
 import net.endermanofdoom.mca.ISoundSupport;
 import net.endermanofdoom.mca.MCA;
@@ -126,8 +127,6 @@ public abstract class EntityPreTitan extends EntityCreature implements IRangedAt
 			
 			this.stepHeight = height * 0.5F;
 			
-			if (motionY > 2D)
-				motionY = 2D;
 			motionY -= 0.2D;
 			
 			if (posY > 300.0D)
@@ -158,6 +157,26 @@ public abstract class EntityPreTitan extends EntityCreature implements IRangedAt
 				if (this.getRevengeTarget() != null && this.getAttackTarget() != this.getRevengeTarget())
 					this.setAttackTarget(getRevengeTarget());
 				
+				if (this.getAttackTarget().posY > this.posY + width + getAttackTarget().width + 12D && rand.nextInt(200) == 0 && this.onGround)
+				{
+					this.jump();
+		        	double d01 = this.getAttackTarget().posX - this.posX;
+		        	double d11 = this.getAttackTarget().posZ - this.posZ;
+		        	float f21 = MathHelper.sqrt(d01 * d01 + d11 * d11);
+		        	double hor = f21 / this.getDistance(getAttackTarget()) * (this.getDistance(getAttackTarget()) * 0.1D);
+		        	this.motionX = (d01 / f21 * hor * hor + this.motionX * hor);
+		        	this.motionZ = (d11 / f21 * hor * hor + this.motionZ * hor);
+		        	if (motionX > 4)
+		        	this.motionX = 4;
+		        	if (motionZ > 4)
+		        	this.motionZ = 4;
+		        	if (motionX < -4)
+		        	this.motionX = -4;
+		        	if (motionZ < -4)
+		        	this.motionZ = -4;
+					motionY += 5;
+				}
+					
 				if (!this.getAttackTarget().isEntityAlive())
 				this.setAttackTarget(null);
 			}
@@ -197,8 +216,9 @@ public abstract class EntityPreTitan extends EntityCreature implements IRangedAt
 	        	
 	    		world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(0.1D)).forEach(entity ->
 	    		{
-	    			if (entity instanceof EntityLivingBase && entity.height <= this.height * 0.1F && entity.onGround)
+	    			if (entity.height <= this.height * 0.1F && entity.onGround)
 	    			{
+	    				if (entity instanceof EntityLivingBase)
 	    				entity.attackEntityFrom(DamageSource.causeMobDamage(this), 40F - this.getDistance(entity));
 	    				this.attackWithAdditionalEffects(entity);
 	    			}
@@ -216,6 +236,12 @@ public abstract class EntityPreTitan extends EntityCreature implements IRangedAt
 					this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + (this.rand.nextFloat() - 0.5D) * this.width, getEntityBoundingBox().minY + 0.1D, this.posZ + (this.rand.nextFloat() - 0.5D) * this.width, 4.0D * (this.rand.nextFloat() - 0.5D), 0.5D, (this.rand.nextFloat() - 0.5D) * 4.0D, new int[] { Block.getStateId(iblockstate) });
 				}
 			}
+			
+			if (!world.isRemote)
+				if (isEntityAlive())
+					MobChunkLoader.updateLoaded(this);
+				else
+					MobChunkLoader.stopLoading(this);
 		}
 		public boolean attackEntityAsMob(Entity entityIn)
 		{

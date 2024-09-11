@@ -7,6 +7,7 @@ import net.endermanofdoom.mac.enums.EnumGender;
 import net.endermanofdoom.mac.music.IMusicInteractable;
 import net.endermanofdoom.mac.util.TranslateUtil;
 import net.endermanofdoom.mac.util.math.Maths;
+import net.endermanofdoom.mca.MCA;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -104,13 +105,13 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	@Override
 	public float getSizeMultiplier()
 	{
-		return isInOmegaForm() ? 512.0F : 256.0F;
+		return isInOmegaForm() ? 1024.0F : 512.0F;
 	}
 	
 	@Override
 	public float getRenderSizeMultiplier()
 	{
-		return isInOmegaForm() ? 512.0F : 256.0F;
+		return isInOmegaForm() ? 1024.0F : 512.0F;
 	}
 	
     public void addVelocity(double x, double y, double z) 
@@ -150,6 +151,9 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			motionY *= 0.9D;
 			if (motionY > 1)
 				motionY = 1;
+
+			if (getAttackTarget() != null && this.posY > getAttackTarget().posY + 8)
+				motionY -= 0.2D;
 			noClip = true;
 			setNoGravity(true);
 			
@@ -665,7 +669,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 
 	public boolean isInOmegaForm()
 	{
-		return true;
+		return this.getHealthD() <= this.getMaxHealthD() * 0.5D;
 	}
 
 	@Override
@@ -718,15 +722,11 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	}
 
 	public double getMobHealth() {
-		double hp = 300D * getSizeMultiplier() * this.getTier().getMultiplier();
-		
-		return hp;
+		return MCA.caclculateValue(world, 600D * getSizeMultiplier() * this.getTier().getMultiplier());
 	}
 
 	public double getMobAttack() {
-		double hp = 24D * getSizeMultiplier() * this.getTier().getMultiplier();
-		
-		return hp;
+		return MCA.caclculateValue(world, 32D * getSizeMultiplier() * this.getTier().getMultiplier());
 	}
 
 	public double getMobSpeed() {
