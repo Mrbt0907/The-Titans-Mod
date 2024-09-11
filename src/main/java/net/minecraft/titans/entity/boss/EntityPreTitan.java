@@ -1,9 +1,7 @@
 package net.minecraft.titans.entity.boss;
 
 import java.util.List;
-
 import com.google.common.base.Predicates;
-
 import net.endermanofdoom.mac.enums.EnumGender;
 import net.endermanofdoom.mac.enums.EnumLevel;
 import net.endermanofdoom.mac.interfaces.IBossBar;
@@ -20,12 +18,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAmbientCreature;
@@ -45,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class EntityPreTitan extends EntityCreature implements IRangedAttackMob, ISoundSupport, IBossBar, IVariedMob, IGendered, IMobTier, IMob, IMusicInteractable
+public abstract class EntityPreTitan extends EntityLiving implements IRangedAttackMob, ISoundSupport, IBossBar, IVariedMob, IGendered, IMobTier, IMob, IMusicInteractable
 {
 	public int attackTimer;
 	public int deathTicks;
@@ -55,8 +51,6 @@ public abstract class EntityPreTitan extends EntityCreature implements IRangedAt
 		super(worldIn);
 		if (worldIn != null && worldIn.isRemote)
 			net.endermanofdoom.mac.internal.music.MusicManager.addMusicInteractable((IMusicInteractable) this);
-		this.tasks.addTask(0, new EntityAISwimming(this));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, new Class[0]));
 	}
 	
 	public int getAttackTimer()

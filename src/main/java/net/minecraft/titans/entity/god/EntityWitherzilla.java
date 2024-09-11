@@ -2,7 +2,6 @@ package net.minecraft.titans.entity.god;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.endermanofdoom.mac.enums.EnumGender;
 import net.endermanofdoom.mac.music.IMusicInteractable;
 import net.endermanofdoom.mac.util.TranslateUtil;
@@ -12,8 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -68,12 +65,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		 super.entityInit();
 		 dataManager.register(ATTACK_TARGET, Integer.valueOf(0));
 	 }
-	
-	protected void initEntityAI()
-	{
-		targetTasks.addTask(0, new EntityAIHurtByTarget(this, true));
-        targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityLivingBase>(this, EntityLivingBase.class, false, false));
-	}
 
 	protected void applyEntityAttributes()
 	{

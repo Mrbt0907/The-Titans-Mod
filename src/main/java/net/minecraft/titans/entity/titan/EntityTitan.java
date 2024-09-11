@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
 import net.endermanofdoom.mac.interfaces.IBossBar;
 import net.endermanofdoom.mac.interfaces.IGendered;
 import net.endermanofdoom.mac.interfaces.IVariedMob;
@@ -12,10 +14,10 @@ import net.endermanofdoom.mac.util.TranslateUtil;
 import net.endermanofdoom.mac.util.chunk.MobChunkLoader;
 import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mac.util.math.Vec;
+import net.endermanofdoom.mca.MCA;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -30,6 +32,7 @@ import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -41,6 +44,7 @@ import net.minecraft.titans.entity.EntityMultiPart;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -53,7 +57,7 @@ import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class EntityTitan extends EntityCreature implements IMobTier, IEntityMultiPart, IBossBar, IGendered, IVariedMob, IMusicInteractable
+public abstract class EntityTitan extends EntityLiving implements IMobTier, IEntityMultiPart, IBossBar, IGendered, IVariedMob, IMusicInteractable
 {
 	private static final IAttribute titanMaxHealth = new RangedAttribute(null, "titan.maxHealth", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Max Health").setShouldWatch(true);
 	private static final IAttribute titanHealth = new RangedAttribute(null, "titan.health", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Health").setShouldWatch(true);
@@ -215,6 +219,18 @@ public abstract class EntityTitan extends EntityCreature implements IMobTier, IE
 				if (((EntityPlayerMP)getAttackTarget()).capabilities.disableDamage && !((EntityPlayer)getAttackTarget()).capabilities.isCreativeMode)
 					((EntityPlayerMP)getAttackTarget()).connection.disconnect(TranslateUtil.translateChat("event.kick.cheat"));
 			}
+	        else
+	        {
+	            List<EntityLivingBase> list = this.world.<EntityLivingBase>getEntitiesWithinAABB(EntityLivingBase.class, this.getEntityBoundingBox().grow(100D), Predicates.and(EntitySelectors.IS_ALIVE, EntitySelectors.CAN_AI_TARGET));
+	            
+	            for (Entity entity : list)
+	            {
+	                if (getAttackTarget() == null && entity instanceof EntityLivingBase && this.getDistance(entity) <= 200D && !(entity instanceof EntityAmbientCreature) && entity.getClass() != this.getClass() && !MCA.isVerminMob(entity))
+	                {
+	                	this.setAttackTarget((EntityLivingBase) entity);
+	                }
+	            }
+	        }
 		}
 
 		updateArmSwingProgress();
