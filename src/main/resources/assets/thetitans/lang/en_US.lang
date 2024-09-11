@@ -472,7 +472,7 @@ entity.zombie.variant.12=Zombie Ghoul
 entity.zombie.variant.13=Zombie Wight
 entity.zombie.variant.14=End Zombie
 
-entity.creeper_titan.name=Creeper Titan
+entity.zombie_titan_proto.name=Zombie Titan [Heavily Supressed]
 entity.witherzilla.name=Witherzilla
 entity.witherzilla.name.true=Regnator
 

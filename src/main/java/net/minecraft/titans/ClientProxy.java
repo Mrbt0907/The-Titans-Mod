@@ -1,12 +1,10 @@
 package net.minecraft.titans;
 
 import net.minecraft.titans.client.TitanManagerClient;
-import net.minecraft.titans.client.entity.renders.RenderGammaLightning;
-import net.minecraft.titans.client.entity.renders.RenderUrLightning;
-import net.minecraft.titans.client.entity.renders.RenderWitherzilla;
-import net.minecraft.titans.entity.EntityGammaLightning;
-import net.minecraft.titans.entity.EntityUrLightning;
-import net.minecraft.titans.entity.god.EntityWitherzilla;
+import net.minecraft.titans.client.entity.renders.*;
+import net.minecraft.titans.entity.*;
+import net.minecraft.titans.entity.god.*;
+import net.minecraft.titans.entity.boss.*;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -38,6 +36,7 @@ public class ClientProxy extends CommonProxy
 	
 	public void renderEntities()
 	{
+		RenderingRegistry.registerEntityRenderingHandler(EntityZombieTitanProto.class, manager -> new RenderZombieTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityWitherzilla.class, manager -> new RenderWitherzilla(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGammaLightning.class, manager -> new RenderGammaLightning(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityUrLightning.class, manager -> new RenderUrLightning(manager));
