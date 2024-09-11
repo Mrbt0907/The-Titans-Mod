@@ -30,6 +30,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -197,7 +198,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 	        	
 	    		world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(0.1D)).forEach(entity ->
 	    		{
-	    			if (entity.height <= 8F)
+	    			if (entity.height <= (entity instanceof EntityFireball ? 1F : 8F))
 	    			{
 	    				if (entity instanceof EntityLivingBase)
 	    				entity.attackEntityFrom(DamageSource.causeMobDamage(this), 40F - this.getDistance(entity));

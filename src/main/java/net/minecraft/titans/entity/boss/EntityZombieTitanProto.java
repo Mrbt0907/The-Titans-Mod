@@ -30,22 +30,22 @@ public class EntityZombieTitanProto extends EntityPreTitan{
 	
 	protected SoundEvent getAmbientSound()
 	{
-		return this.getInvulTime() > 600 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_AMBIENT : TSounds.get("titan.zombie.living");
+		return this.getSizeMultiplier() <= 6 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_AMBIENT : TSounds.get("titan.zombie.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
 	{
-		return TSounds.get("titan.zombie.grunt");
+		return this.getSizeMultiplier() <= 6 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_HURT : TSounds.get("titan.zombie.grunt");
 	}
 	
 	protected SoundEvent getDeathSound()
 	{
-		return TSounds.get("titan.zombie.death");
+		return this.getSizeMultiplier() <= 6 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_DEATH : TSounds.get("titan.zombie.death");
 	}
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
+		playSound(this.getSizeMultiplier() <= 6 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
 	}
 
 	public double getMobHealth() 
@@ -60,7 +60,7 @@ public class EntityZombieTitanProto extends EntityPreTitan{
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 140D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = MCA.caclculateValue(world, 70D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
 		return attack;
 	}
