@@ -227,13 +227,13 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 				this.getLookHelper().setLookPositionWithEntity(getAttackTarget(), 10, 50);
 				this.getMoveHelper().setMoveTo(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 1D);
 
-				if (this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + 12D && attackTimer <= 0)
+				if (this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + 16D && attackTimer <= 0)
 					this.attackEntityAsMob(getAttackTarget());
 				
 				if (this.getRevengeTarget() != null && this.getAttackTarget() != this.getRevengeTarget())
 					this.setAttackTarget(getRevengeTarget());
 				
-				if (this.getAttackTarget().posY > this.posY + width + getAttackTarget().width + 12D && rand.nextInt(200) == 0 && (this.onGround || posY <= 1.0D))
+				if ((this.getAttackTarget().posY > this.posY + height + getAttackTarget().height + 4D || this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + 32D) && rand.nextInt(200) == 0 && (this.onGround || posY <= 1.0D))
 				{
 					this.jump();
 		        	double d01 = this.getAttackTarget().posX - this.posX;
@@ -291,6 +291,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 	                this.ticksExisted = 10;
 	                if (j1 <= 0)
 	                {
+	                	if (!this.world.isRemote)
 	                    this.world.newExplosion(this, this.posX, this.posY + (double)this.getEyeHeight(), this.posZ, 7.0F + height, false, net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this));
 	                    this.world.playBroadcastSound(1023, new BlockPos(this), 0);
 	                }
@@ -446,7 +447,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 			{
 				++this.deathTicks;
 				
-	            if (this.deathTicks > 150 && this.deathTicks % 5 == 0)
+	            if (this.deathTicks > 50 && this.deathTicks % 5 == 0)
 	            {
 	                if (!this.world.isRemote && this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot"))
 	                {
@@ -454,7 +455,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 	                }
 	            }
 				
-				if (this.deathTicks == 200)
+				if (this.deathTicks == 90)
 				{
 	                if (!this.world.isRemote && this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot"))
 	                {
@@ -470,12 +471,16 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 					this.setDead();
 				}
 				
-		        if (this.deathTicks <= 200)
+		        if (this.deathTicks <= 90)
 		        {
-	            	if (this.deathTicks >= 180 && this.deathTime < 20)
+					this.rotationPitch = 20 - deathTicks;
+	            	if (this.deathTicks >= 60 && this.deathTime < 20)
 	            		++this.deathTime;
-	            	else
+	            	else if (this.deathTicks < 60)
 	            		this.deathTime = 0;
+	            	
+	            	if (this.deathTime == 15)
+	            		this.playSound(TSounds.get("titan.fall"), this.getSizeMultiplier(), 1F);
 		            float f = (this.rand.nextFloat() - 0.5F) * width;
 		            float f1 = this.rand.nextFloat() * height;
 		            float f2 = (this.rand.nextFloat() - 0.5F) * width;

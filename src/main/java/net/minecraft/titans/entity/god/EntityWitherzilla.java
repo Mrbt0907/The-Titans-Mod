@@ -114,7 +114,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	{
 		super.onLivingUpdate();
 		Entity entity = getTarget();
-		
+		this.setSize(12, 12);
 		if (world.getWorldTime() != 8000)
 			world.setWorldTime(8000);
 		
@@ -220,6 +220,9 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		}
 			if (entity != null)
 				getLookHelper().setLookPosition(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ, 10.0F, 10.0F);
+			else if (world.getClosestPlayerToEntity(this, -1D) != null)
+        		this.getLookHelper().setLookPositionWithEntity(world.getClosestPlayerToEntity(this, -1D), 2F, 10F);
+        	
 			for (int j = 0; j < 2; ++j)
 		       {
 		           if (entity != null)
