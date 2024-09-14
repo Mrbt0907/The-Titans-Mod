@@ -25,7 +25,7 @@ public class RenderZombieTitanProto extends RenderPreTitan<EntityZombieTitanProt
             float f = 13.0F;
             float f1 = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - partialTicks) + 6.0F;
             float f2 = (Math.abs(f1 % f - 6.5F) - 3.25F) / 3.25F;
-            GlStateManager.rotate(6.5F * f2, 0.0F, 0.0F, 1.0F);
+            GlStateManager.rotate((0.2F * entityLiving.getSizeMultiplier()) * f2, 0.0F, 0.0F, 1.0F);
         }
     }
 
@@ -37,8 +37,8 @@ public class RenderZombieTitanProto extends RenderPreTitan<EntityZombieTitanProt
         return new ResourceLocation("textures/entity/zombie/zombie.png");
     }
 
-	public boolean shouldSpecialRender(EntityZombieTitanProto titan) {
-		// TODO Auto-generated method stub
+	public boolean shouldSpecialRender(EntityZombieTitanProto titan) 
+	{
 		return false;
 	}
 }
