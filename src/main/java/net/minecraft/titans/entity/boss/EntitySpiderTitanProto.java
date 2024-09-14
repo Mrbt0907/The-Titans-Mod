@@ -21,9 +21,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityZombieTitanProto extends EntityPreTitan
+public class EntitySpiderTitanProto extends EntityPreTitan
 {
-    public EntityZombieTitanProto(World worldIn) {
+    public EntitySpiderTitanProto(World worldIn) {
 		super(worldIn);
 	}
 	
@@ -31,27 +31,27 @@ public class EntityZombieTitanProto extends EntityPreTitan
     {
     	super.ignite();
     	
-    	playSound(SoundEvents.ENTITY_ZOMBIE_AMBIENT, 10F, 1F);
+    	playSound(SoundEvents.ENTITY_SPIDER_AMBIENT, 10F, 1F);
     }
 	
 	protected SoundEvent getAmbientSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_AMBIENT : TSounds.get("titan.zombie.living");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_AMBIENT : TSounds.get("titan.spider.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_HURT : TSounds.get("titan.zombie.grunt");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_HURT : TSounds.get("titan.spider.grunt");
 	}
 	
 	protected SoundEvent getDeathSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_DEATH : TSounds.get("titan.zombie.death");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_DEATH : TSounds.get("titan.spider.death");
 	}
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch() + 0.5F);
 	}
 
     /**
@@ -62,16 +62,19 @@ public class EntityZombieTitanProto extends EntityPreTitan
         return (this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.75F : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.25F) - (this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSizeMultiplier() * 0.05F : this.getSizeMultiplier() * 0.01F);
     }
 
+    public float getBaseWidth()
+    {
+    	return 1.2F;
+    }
+
+    public float getBaseHeight()
+    {
+    	return 0.75F;
+    }
+
     public float getEyeHeight()
     {
-        float f = 1.74F;
-
-        if (this.isChild())
-        {
-            f = (float)((double)f - 0.81D);
-        }
-
-        return f * getSizeMultiplier();
+        return 0.65F * getSizeMultiplier();
     }
 
     /**
@@ -103,17 +106,17 @@ public class EntityZombieTitanProto extends EntityPreTitan
 				List<Entity> targets = new ArrayList<Entity>(world.loadedEntityList);
 				targets.forEach(victim ->
 				{
-					if (Maths.random(3000) == 0)
+					if (Maths.random(6000) == 0)
 						if (victim instanceof EntityLivingBase && victim.isEntityAlive() && victim != this)
 						{
-							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 500F);
+							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 100F);
 							EntityLightningBolt entitylightning = new EntityLightningBolt(world, victim.posX, victim.posY, victim.posZ, false);
 							world.addWeatherEffect(entitylightning);
 						}
 				});
 			}
 			
-			if (rand.nextInt(400) == 0)
+			if (rand.nextInt(800) == 0)
 			{
 				for (int l = 0; l < 20; l++)
 				{
@@ -138,7 +141,7 @@ public class EntityZombieTitanProto extends EntityPreTitan
 
 	public double getMobHealth() 
 	{
-		double hp = MCA.caclculateValue(world, 7000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = MCA.caclculateValue(world, 5000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 		
 		if (this.getVariant() > 7)
 			hp *= 4D;
@@ -149,12 +152,12 @@ public class EntityZombieTitanProto extends EntityPreTitan
 		if (world.playerEntities.size() > 1)
 			hp *= world.playerEntities.size();
 		
-		return hp <= 20 ? 20 : hp;
+		return hp <= 16 ? 16 : hp;
 	}
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 14D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = MCA.caclculateValue(world, 6D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
 		if (this.getVariant() > 7)
 			attack *= 5D;
@@ -164,10 +167,10 @@ public class EntityZombieTitanProto extends EntityPreTitan
 
 	public double getMobSpeed() 
 	{
-		double speed = 0.75D - (getSizeMultiplier() * 0.075);
+		double speed = 1.5D - (getSizeMultiplier() * 0.075);
 
-		if (speed <= 0.25D)
-			speed = 0.25D;
+		if (speed <= 0.325D)
+			speed = 0.325D;
 		
 		return speed;
 	}
@@ -175,13 +178,13 @@ public class EntityZombieTitanProto extends EntityPreTitan
 	public int[] getBarColor() 
 	{
 		if (getVariant() >= 63)
-			return new int[] {0, 120, 40};
+			return new int[] {140, 0, 0};
 		if (getVariant() >= 15)
-			return new int[] {0, 180, 40};
+			return new int[] {170, 0, 0};
 		else if (getVariant() >= 7)
-			return new int[] {0, 200, 60};
+			return new int[] {200, 0, 0};
 		else
-			return new int[] {0, 220, 80};
+			return new int[] {230, 0, 0};
 	}
 
 	@Override
@@ -200,11 +203,11 @@ public class EntityZombieTitanProto extends EntityPreTitan
 
 	public void setVariant(int type) 
 	{
-        super.setVariant(type);
+		super.setVariant(type);
 
-		this.experienceValue = 10000 * (1 + type);
+		this.experienceValue = 2000 * (1 + type);
 	}
-
+	
     /**
      * Get the name of this object. For players this returns their username
      */
@@ -217,13 +220,13 @@ public class EntityZombieTitanProto extends EntityPreTitan
         else
         {
         	if (this.getVariant() >= 63)
-                return I18n.format("entity.zombie_titan_proto.supreme.name");
+                return I18n.format("entity.spider_titan_proto.supreme.name");
         	if (this.getVariant() >= 31)
-                return I18n.format("entity.zombie_titan_proto.og1710.name");
+                return I18n.format("entity.spider_titan_proto.og1710.name");
         	else if (this.getVariant() >= 15)
-                return I18n.format("entity.zombie_titan_proto.og18.name");
+                return I18n.format("entity.spider_titan_proto.og18.name");
         	else
-        		return I18n.format("entity.zombie_titan_proto.demititan.name");
+        		return I18n.format("entity.spider_titan_proto.demititan.name");
         }
     }
     

@@ -472,6 +472,11 @@ entity.zombie.variant.12=Zombie Ghoul
 entity.zombie.variant.13=Zombie Wight
 entity.zombie.variant.14=End Zombie
 
+entity.spider_titan_proto.name=Spider Titan (Lesser Versions)
+entity.spider_titan_proto.demititan.name=Spider Demi-Titan
+entity.spider_titan_proto.og18.name=Spider Titan [Very Heavily Suppressed]
+entity.spider_titan_proto.og1710.name=Spider Titan [Heavily Suppressed]
+entity.spider_titan_proto.supreme.name=Spider Titan [Suppressed]
 entity.zombie_titan_proto.name=Zombie Titan (Lesser Versions)
 entity.zombie_titan_proto.demititan.name=Zombie Demi-Titan
 entity.zombie_titan_proto.og18.name=Zombie Titan [Very Heavily Suppressed]
