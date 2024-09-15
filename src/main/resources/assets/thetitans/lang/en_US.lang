@@ -472,16 +472,17 @@ entity.zombie.variant.12=Zombie Ghoul
 entity.zombie.variant.13=Zombie Wight
 entity.zombie.variant.14=End Zombie
 
+entity.cave_spider_titan_proto.name=Cave Spider Titan (Lesser Versions)
 entity.spider_titan_proto.name=Spider Titan (Lesser Versions)
-entity.spider_titan_proto.demititan.name=Spider Demi-Titan
-entity.spider_titan_proto.og18.name=Spider Titan [Very Heavily Suppressed]
-entity.spider_titan_proto.og1710.name=Spider Titan [Heavily Suppressed]
-entity.spider_titan_proto.supreme.name=Spider Titan [Suppressed]
+entity.skeleton_titan_proto.name=Skeleton Titan (Lesser Versions)
 entity.zombie_titan_proto.name=Zombie Titan (Lesser Versions)
-entity.zombie_titan_proto.demititan.name=Zombie Demi-Titan
-entity.zombie_titan_proto.og18.name=Zombie Titan [Very Heavily Suppressed]
-entity.zombie_titan_proto.og1710.name=Zombie Titan [Heavily Suppressed]
-entity.zombie_titan_proto.supreme.name=Zombie Titan [Suppressed]
+entity.pigzombie_titan_proto.name=Zombie Pigman Titan (Lesser Versions)
+entity.titan.name=Titan
+entity.demititan.name=Demi-Titan
+entity.titan.level1.name=[Extremely Heavily Suppressed]
+entity.titan.level2.name=[Very Heavily Suppressed]
+entity.titan.level3.name=[Heavily Suppressed]
+entity.titan.level4.name=[Suppressed]
 entity.witherzilla.name=Witherzilla
 entity.witherzilla.name.true=Regnator
 

@@ -6,12 +6,16 @@ import javax.annotation.Nullable;
 import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mca.MCA;
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
@@ -19,12 +23,14 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 public class EntityZombieTitanProto extends EntityPreTitan
 {
     public EntityZombieTitanProto(World worldIn) {
 		super(worldIn);
+		this.experienceValue = 3000;
 	}
 	
     public void ignite()
@@ -136,6 +142,28 @@ public class EntityZombieTitanProto extends EntityPreTitan
 		}
 	}
 
+    /**
+     * Gives armor or weapon for entity based on given DifficultyInstance
+     */
+    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
+    {
+        super.setEquipmentBasedOnDifficulty(difficulty);
+
+        if (this.rand.nextFloat() < (this.world.getDifficulty() == EnumDifficulty.HARD ? 0.05F : 0.01F))
+        {
+            int i = this.rand.nextInt(3);
+
+            if (i == 0)
+            {
+                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+            }
+            else
+            {
+                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
+            }
+        }
+    }
+
 	public double getMobHealth() 
 	{
 		double hp = MCA.caclculateValue(world, 7000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
@@ -174,14 +202,7 @@ public class EntityZombieTitanProto extends EntityPreTitan
     
 	public int[] getBarColor() 
 	{
-		if (getVariant() >= 63)
-			return new int[] {0, 120, 40};
-		if (getVariant() >= 15)
-			return new int[] {0, 180, 40};
-		else if (getVariant() >= 7)
-			return new int[] {0, 200, 60};
-		else
-			return new int[] {0, 220, 80};
+		return new int[] {0, 220 - (getVariant() / 3), 100 - (getVariant() / 5)};
 	}
 
 	@Override
@@ -198,34 +219,10 @@ public class EntityZombieTitanProto extends EntityPreTitan
 		return size;
 	}
 
-	public void setVariant(int type) 
+	protected EntityLiving getBaseMob() 
 	{
-        super.setVariant(type);
-
-		this.experienceValue = 10000 * (1 + type);
+		return new EntityZombie(world);
 	}
-
-    /**
-     * Get the name of this object. For players this returns their username
-     */
-    public String getName()
-    {
-        if (this.hasCustomName())
-        {
-            return this.getCustomNameTag();
-        }
-        else
-        {
-        	if (this.getVariant() >= 63)
-                return I18n.format("entity.zombie_titan_proto.supreme.name");
-        	if (this.getVariant() >= 31)
-                return I18n.format("entity.zombie_titan_proto.og1710.name");
-        	else if (this.getVariant() >= 15)
-                return I18n.format("entity.zombie_titan_proto.og18.name");
-        	else
-        		return I18n.format("entity.zombie_titan_proto.demititan.name");
-        }
-    }
     
     /**
      * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
@@ -239,7 +236,7 @@ public class EntityZombieTitanProto extends EntityPreTitan
         for (int i = 0; i < 7; ++i)
         {
             this.setVariant(i);
-            if (rand.nextFloat() >= 0.25F)
+            if (rand.nextFloat() >= 0.5F)
             	break;
         }
 
@@ -247,6 +244,8 @@ public class EntityZombieTitanProto extends EntityPreTitan
             this.setVariant(7);
 
         this.ignite();
+        this.setEquipmentBasedOnDifficulty(difficulty);
+        this.setEnchantmentBasedOnDifficulty(difficulty);
     	
         return super.onInitialSpawn(difficulty, livingdata);
     }

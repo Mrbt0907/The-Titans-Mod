@@ -9,15 +9,14 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -26,98 +25,31 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntitySpiderTitanProto extends EntityPreTitan
+public class EntityPigZombieTitanProto extends EntityPreTitan
 {
-    private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(EntitySpiderTitanProto.class, DataSerializers.BYTE);
-
-    public EntitySpiderTitanProto(World worldIn) {
+    public EntityPigZombieTitanProto(World worldIn) {
 		super(worldIn);
-		this.experienceValue = 1000;
+		this.experienceValue = 5000;
 	}
-
-    protected void entityInit()
-    {
-        super.entityInit();
-        this.dataManager.register(CLIMBING, Byte.valueOf((byte)0));
-    }
-
-    /**
-     * Called to update the entity's position/logic.
-     */
-    public void onUpdate()
-    {
-        super.onUpdate();
-
-        if (!this.world.isRemote)
-        {
-            this.setBesideClimbableBlock(this.collidedHorizontally);
-        }
-    }
-
-    /**
-     * Returns true if this entity should move as if it were on a ladder (either because it's actually on a ladder, or
-     * for AI reasons)
-     */
-    public boolean isOnLadder()
-    {
-        return this.isBesideClimbableBlock();
-    }
-
-    /**
-     * Get this Entity's EnumCreatureAttribute
-     */
-    public EnumCreatureAttribute getCreatureAttribute()
-    {
-        return EnumCreatureAttribute.ARTHROPOD;
-    }
-
-    /**
-     * Returns true if the WatchableObject (Byte) is 0x01 otherwise returns false. The WatchableObject is updated using
-     * setBesideClimableBlock.
-     */
-    public boolean isBesideClimbableBlock()
-    {
-        return (((Byte)this.dataManager.get(CLIMBING)).byteValue() & 1) != 0;
-    }
-
-    /**
-     * Updates the WatchableObject (Byte) created in entityInit(), setting it to 0x01 if par1 is true or 0x00 if it is
-     * false.
-     */
-    public void setBesideClimbableBlock(boolean climbing)
-    {
-        byte b0 = ((Byte)this.dataManager.get(CLIMBING)).byteValue();
-
-        if (climbing)
-        {
-            b0 = (byte)(b0 | 1);
-        }
-        else
-        {
-            b0 = (byte)(b0 & -2);
-        }
-
-        this.dataManager.set(CLIMBING, Byte.valueOf(b0));
-    }
 	
 	protected SoundEvent getAmbientSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_AMBIENT : TSounds.get("titan.spider.living");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_PIG_AMBIENT : TSounds.get("titan.pigzombie.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_HURT : TSounds.get("titan.spider.grunt");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_PIG_HURT : TSounds.get("titan.pigzombie.grunt");
 	}
 	
 	protected SoundEvent getDeathSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_DEATH : TSounds.get("titan.spider.death");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_PIG_DEATH : TSounds.get("titan.pigzombie.death");
 	}
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch() + 0.5F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
 	}
 
     /**
@@ -128,19 +60,16 @@ public class EntitySpiderTitanProto extends EntityPreTitan
         return (this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.75F : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.25F) - (this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSizeMultiplier() * 0.05F : this.getSizeMultiplier() * 0.01F);
     }
 
-    public float getBaseWidth()
-    {
-    	return 1.4F;
-    }
-
-    public float getBaseHeight()
-    {
-    	return 0.8F;
-    }
-
     public float getEyeHeight()
     {
-        return 0.65F * getSizeMultiplier();
+        float f = 1.74F;
+
+        if (this.isChild())
+        {
+            f = (float)((double)f - 0.81D);
+        }
+
+        return f * getSizeMultiplier();
     }
 
     /**
@@ -165,6 +94,9 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 	{
 		super.onLivingUpdate();
 		
+		if (this.getAttackTarget() != null && rand.nextFloat() <= 0.01F)
+			this.playSound(SoundEvents.ENTITY_ZOMBIE_PIG_ANGRY, this.getSoundVolume(), 2F - (this.getSizeMultiplier() * 0.05F));
+		
 		if (this.getVariant() >= 63 && !world.isRemote)
 		{
 			if (ticksExisted % 10 == 0)
@@ -172,17 +104,17 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 				List<Entity> targets = new ArrayList<Entity>(world.loadedEntityList);
 				targets.forEach(victim ->
 				{
-					if (Maths.random(6000) == 0)
+					if (Maths.random(3000) == 0)
 						if (victim instanceof EntityLivingBase && victim.isEntityAlive() && victim != this)
 						{
-							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 100F);
+							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 500F);
 							EntityLightningBolt entitylightning = new EntityLightningBolt(world, victim.posX, victim.posY, victim.posZ, false);
 							world.addWeatherEffect(entitylightning);
 						}
 				});
 			}
 			
-			if (rand.nextInt(800) == 0)
+			if (rand.nextInt(400) == 0)
 			{
 				for (int l = 0; l < 20; l++)
 				{
@@ -205,9 +137,18 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 		}
 	}
 
+    /**
+     * Gives armor or weapon for entity based on given DifficultyInstance
+     */
+    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
+    {
+        super.setEquipmentBasedOnDifficulty(difficulty);
+        this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
+    }
+
 	public double getMobHealth() 
 	{
-		double hp = MCA.caclculateValue(world, 5000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = MCA.caclculateValue(world, 7000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 		
 		if (this.getVariant() > 7)
 			hp *= 4D;
@@ -218,12 +159,12 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 		if (world.playerEntities.size() > 1)
 			hp *= world.playerEntities.size();
 		
-		return hp <= 16 ? 16 : hp;
+		return hp <= 20 ? 20 : hp;
 	}
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 6D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = MCA.caclculateValue(world, 28D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
 		if (this.getVariant() > 7)
 			attack *= 5D;
@@ -233,7 +174,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	public double getMobSpeed() 
 	{
-		double speed = 1.5D - (getSizeMultiplier() * 0.075);
+		double speed = 1D - (getSizeMultiplier() * 0.075);
 
 		if (speed <= 0.325D)
 			speed = 0.325D;
@@ -243,7 +184,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
     
 	public int[] getBarColor() 
 	{
-		return new int[] {230 - (getVariant() / 5), 0, 0};
+		return new int[] {230 - (getVariant() / 2), 190 - (getVariant() / 2), 190 - (getVariant() / 2)};
 	}
 
 	@Override
@@ -262,7 +203,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	protected EntityLiving getBaseMob() 
 	{
-		return new EntitySpider(world);
+		return new EntityPigZombie(world);
 	}
     
     /**
@@ -285,6 +226,8 @@ public class EntitySpiderTitanProto extends EntityPreTitan
             this.setVariant(7);
 
         this.ignite();
+        this.setEquipmentBasedOnDifficulty(difficulty);
+        this.setEnchantmentBasedOnDifficulty(difficulty);
     	
         return super.onInitialSpawn(difficulty, livingdata);
     }

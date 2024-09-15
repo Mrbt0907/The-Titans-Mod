@@ -12,7 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityCaveSpider;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -26,11 +26,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntitySpiderTitanProto extends EntityPreTitan
+public class EntityCaveSpiderTitanProto extends EntityPreTitan
 {
-    private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(EntitySpiderTitanProto.class, DataSerializers.BYTE);
+    private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(EntityCaveSpiderTitanProto.class, DataSerializers.BYTE);
 
-    public EntitySpiderTitanProto(World worldIn) {
+    public EntityCaveSpiderTitanProto(World worldIn) {
 		super(worldIn);
 		this.experienceValue = 1000;
 	}
@@ -207,7 +207,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	public double getMobHealth() 
 	{
-		double hp = MCA.caclculateValue(world, 5000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = MCA.caclculateValue(world, 4000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 		
 		if (this.getVariant() > 7)
 			hp *= 4D;
@@ -233,7 +233,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	public double getMobSpeed() 
 	{
-		double speed = 1.5D - (getSizeMultiplier() * 0.075);
+		double speed = 1.75D - (getSizeMultiplier() * 0.075);
 
 		if (speed <= 0.325D)
 			speed = 0.325D;
@@ -243,7 +243,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
     
 	public int[] getBarColor() 
 	{
-		return new int[] {230 - (getVariant() / 5), 0, 0};
+		return new int[] {180 - (getVariant() / 5), 0, 0};
 	}
 
 	@Override
@@ -256,13 +256,14 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 		
 		if (size <= 1F)
 			size = 1F;
+		size *= 0.7F;
 		
 		return size;
 	}
 
 	protected EntityLiving getBaseMob() 
 	{
-		return new EntitySpider(world);
+		return new EntityCaveSpider(world);
 	}
     
     /**

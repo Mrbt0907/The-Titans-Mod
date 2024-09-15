@@ -14,8 +14,11 @@ public class TEntities
 
 	public static void registerEntity()
 	{
+		createEntityWithEgg(EntityCaveSpiderTitanProto.class, "cave_spider_titan_proto", 803406, 11013646);
 		createEntityWithEgg(EntitySpiderTitanProto.class, "spider_titan_proto", 3419431, 11013646);
+		createEntityWithEgg(EntitySkeletonTitanProto.class, "skeleton_titan_proto", 12698049, 4802889);
 		createEntityWithEgg(EntityZombieTitanProto.class, "zombie_titan_proto", 44975, 7969893);
+		createEntityWithEgg(EntityPigZombieTitanProto.class, "pigzombie_titan_proto", 15373203, 5009705);
 		createEntityWithEgg(EntityWitherzilla.class, "witherzilla", 0x000000, 0xffffea);
 		createEntity(EntityGammaLightning.class, "gamma_lightning");
 		createEntity(EntityUrLightning.class, "ur_lightning");

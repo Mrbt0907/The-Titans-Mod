@@ -4,20 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.endermanofdoom.mac.util.math.Maths;
+import net.endermanofdoom.mca.EnumSoundType;
 import net.endermanofdoom.mca.MCA;
+import net.endermanofdoom.mca.entity.projectile.EntityArrowOther;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -26,98 +28,38 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntitySpiderTitanProto extends EntityPreTitan
+public class EntitySkeletonTitanProto extends EntityPreTitan
 {
-    private static final DataParameter<Byte> CLIMBING = EntityDataManager.<Byte>createKey(EntitySpiderTitanProto.class, DataSerializers.BYTE);
-
-    public EntitySpiderTitanProto(World worldIn) {
+    public EntitySkeletonTitanProto(World worldIn) {
 		super(worldIn);
-		this.experienceValue = 1000;
+		this.experienceValue = 4000;
 	}
-
-    protected void entityInit()
+	
+    public void ignite()
     {
-        super.entityInit();
-        this.dataManager.register(CLIMBING, Byte.valueOf((byte)0));
-    }
-
-    /**
-     * Called to update the entity's position/logic.
-     */
-    public void onUpdate()
-    {
-        super.onUpdate();
-
-        if (!this.world.isRemote)
-        {
-            this.setBesideClimbableBlock(this.collidedHorizontally);
-        }
-    }
-
-    /**
-     * Returns true if this entity should move as if it were on a ladder (either because it's actually on a ladder, or
-     * for AI reasons)
-     */
-    public boolean isOnLadder()
-    {
-        return this.isBesideClimbableBlock();
-    }
-
-    /**
-     * Get this Entity's EnumCreatureAttribute
-     */
-    public EnumCreatureAttribute getCreatureAttribute()
-    {
-        return EnumCreatureAttribute.ARTHROPOD;
-    }
-
-    /**
-     * Returns true if the WatchableObject (Byte) is 0x01 otherwise returns false. The WatchableObject is updated using
-     * setBesideClimableBlock.
-     */
-    public boolean isBesideClimbableBlock()
-    {
-        return (((Byte)this.dataManager.get(CLIMBING)).byteValue() & 1) != 0;
-    }
-
-    /**
-     * Updates the WatchableObject (Byte) created in entityInit(), setting it to 0x01 if par1 is true or 0x00 if it is
-     * false.
-     */
-    public void setBesideClimbableBlock(boolean climbing)
-    {
-        byte b0 = ((Byte)this.dataManager.get(CLIMBING)).byteValue();
-
-        if (climbing)
-        {
-            b0 = (byte)(b0 | 1);
-        }
-        else
-        {
-            b0 = (byte)(b0 & -2);
-        }
-
-        this.dataManager.set(CLIMBING, Byte.valueOf(b0));
+    	super.ignite();
+    	
+    	playSound(SoundEvents.ENTITY_SKELETON_AMBIENT, 10F, 1F);
     }
 	
 	protected SoundEvent getAmbientSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_AMBIENT : TSounds.get("titan.spider.living");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SKELETON_AMBIENT : TSounds.get("titan.skeleton.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_HURT : TSounds.get("titan.spider.grunt");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SKELETON_HURT : TSounds.get("titan.skeleton.grunt");
 	}
 	
 	protected SoundEvent getDeathSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_DEATH : TSounds.get("titan.spider.death");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SKELETON_DEATH : TSounds.get("titan.skeleton.death");
 	}
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch() + 0.5F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SKELETON_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
 	}
 
     /**
@@ -128,19 +70,16 @@ public class EntitySpiderTitanProto extends EntityPreTitan
         return (this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.75F : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.25F) - (this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSizeMultiplier() * 0.05F : this.getSizeMultiplier() * 0.01F);
     }
 
-    public float getBaseWidth()
-    {
-    	return 1.4F;
-    }
-
-    public float getBaseHeight()
-    {
-    	return 0.8F;
-    }
-
     public float getEyeHeight()
     {
-        return 0.65F * getSizeMultiplier();
+        float f = 1.74F;
+
+        if (this.isChild())
+        {
+            f = (float)((double)f - 0.81D);
+        }
+
+        return f * getSizeMultiplier();
     }
 
     /**
@@ -172,17 +111,17 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 				List<Entity> targets = new ArrayList<Entity>(world.loadedEntityList);
 				targets.forEach(victim ->
 				{
-					if (Maths.random(6000) == 0)
+					if (Maths.random(3000) == 0)
 						if (victim instanceof EntityLivingBase && victim.isEntityAlive() && victim != this)
 						{
-							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 100F);
+							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 500F);
 							EntityLightningBolt entitylightning = new EntityLightningBolt(world, victim.posX, victim.posY, victim.posZ, false);
 							world.addWeatherEffect(entitylightning);
 						}
 				});
 			}
 			
-			if (rand.nextInt(800) == 0)
+			if (rand.nextInt(400) == 0)
 			{
 				for (int l = 0; l < 20; l++)
 				{
@@ -205,9 +144,18 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 		}
 	}
 
+    /**
+     * Gives armor or weapon for entity based on given DifficultyInstance
+     */
+    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
+    {
+        super.setEquipmentBasedOnDifficulty(difficulty);
+        this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+    }
+
 	public double getMobHealth() 
 	{
-		double hp = MCA.caclculateValue(world, 5000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = MCA.caclculateValue(world, 7000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 		
 		if (this.getVariant() > 7)
 			hp *= 4D;
@@ -218,12 +166,12 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 		if (world.playerEntities.size() > 1)
 			hp *= world.playerEntities.size();
 		
-		return hp <= 16 ? 16 : hp;
+		return hp <= 20 ? 20 : hp;
 	}
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 6D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = MCA.caclculateValue(world, 8D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
 		if (this.getVariant() > 7)
 			attack *= 5D;
@@ -233,17 +181,17 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	public double getMobSpeed() 
 	{
-		double speed = 1.5D - (getSizeMultiplier() * 0.075);
+		double speed = 0.5D - (getSizeMultiplier() * 0.075);
 
-		if (speed <= 0.325D)
-			speed = 0.325D;
+		if (speed <= 0.25D)
+			speed = 0.25D;
 		
 		return speed;
 	}
     
 	public int[] getBarColor() 
 	{
-		return new int[] {230 - (getVariant() / 5), 0, 0};
+		return new int[] {240 - (getVariant() / 2), 240 - (getVariant() / 2), 240 - (getVariant() / 2)};
 	}
 
 	@Override
@@ -262,7 +210,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	protected EntityLiving getBaseMob() 
 	{
-		return new EntitySpider(world);
+		return new EntitySkeleton(world);
 	}
     
     /**
@@ -285,7 +233,36 @@ public class EntitySpiderTitanProto extends EntityPreTitan
             this.setVariant(7);
 
         this.ignite();
+        this.setEquipmentBasedOnDifficulty(difficulty);
+        this.setEnchantmentBasedOnDifficulty(difficulty);
     	
         return super.onInitialSpawn(difficulty, livingdata);
     }
+    
+    /**
+     * Attack the specified entity using a ranged attack.
+     */
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor)
+    {
+		if (!world.isRemote)
+		for (int i = -1; i < this.getVariant(); ++i)
+		{
+	    	EntityArrowOther entityarrow = new EntityArrowOther(this.world, this);
+	        entityarrow.setEnchantmentEffectsFromEntity(this, distanceFactor);
+	        double d0 = target.posX - this.posX;
+	        double d1 = target.getEntityBoundingBox().minY + (double)(target.getEyeHeight() * 0.2F) - entityarrow.posY;
+	        double d2 = target.posZ - this.posZ;
+	        double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
+	        entityarrow.shoot(d0, d1 + d3 * 0.25D, d2, this.getSizeMultiplier() * 0.1F + 1.6F, this.getSizeMultiplier() * 0.5F);
+	        entityarrow.setDamage(getMobAttack());
+	        entityarrow.pickupStatus = EntityArrow.PickupStatus.DISALLOWED;
+	        this.world.spawnEntity(entityarrow);
+		}
+        this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+    }
+
+	public EnumSoundType getSoundType() 
+	{
+		return EnumSoundType.WOOD;
+	}
 }
