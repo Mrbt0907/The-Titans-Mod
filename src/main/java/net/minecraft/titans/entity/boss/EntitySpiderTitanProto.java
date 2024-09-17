@@ -117,7 +117,10 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch() + 0.5F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.5F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.6F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.7F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.8F);
 	}
 
     /**

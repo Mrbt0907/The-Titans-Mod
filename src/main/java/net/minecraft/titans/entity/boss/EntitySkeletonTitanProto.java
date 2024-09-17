@@ -14,6 +14,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -22,9 +23,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -244,21 +247,26 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
      */
     public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor)
     {
-		if (!world.isRemote)
-		for (int i = -1; i < this.getVariant(); ++i)
-		{
-	    	EntityArrowOther entityarrow = new EntityArrowOther(this.world, this);
-	        entityarrow.setEnchantmentEffectsFromEntity(this, distanceFactor);
-	        double d0 = target.posX - this.posX;
-	        double d1 = target.getEntityBoundingBox().minY + (double)(target.getEyeHeight() * 0.2F) - entityarrow.posY;
-	        double d2 = target.posZ - this.posZ;
-	        double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
-	        entityarrow.shoot(d0, d1 + d3 * 0.25D, d2, this.getSizeMultiplier() * 0.1F + 1.6F, this.getSizeMultiplier() * 0.5F);
-	        entityarrow.setDamage(getMobAttack());
-	        entityarrow.pickupStatus = EntityArrow.PickupStatus.DISALLOWED;
-	        this.world.spawnEntity(entityarrow);
-		}
-        this.playSound(SoundEvents.ENTITY_SKELETON_SHOOT, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+    	if (getDistance(target) <= (width + getAttackTarget().width + getSizeMultiplier()) * 8D)
+    	{
+            Vec3d vec3d = getLook(1.0F);
+    		for (int d = 0; d < world.getDifficulty().getDifficultyId(); ++d)
+    		for (int i = -1; i < getVariant(); ++i)
+    		{
+    	    	EntityArrowOther entityarrow = new EntityArrowOther(world, this);
+    	        entityarrow.setEnchantmentEffectsFromEntity(this, distanceFactor);
+    	        double d0 = target.posX - (this.posX + (vec3d.x * (0.2D * getSizeMultiplier())));
+    	        double d1 = target.getEntityBoundingBox().minY + (double)(target.getEyeHeight() * 0.1F) - (this.posY + (getEyeHeight() * 0.8F) + (vec3d.y * (0.2D * getSizeMultiplier())));
+    	        double d2 = target.posZ - (this.posZ + (vec3d.z * (0.2D * getSizeMultiplier())));
+    	        double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
+    	        entityarrow.shoot(d0, d1 + d3 * 0.25D, d2, getSizeMultiplier() * 0.1F + 1.6F, getSizeMultiplier() * 0.25F);
+    	        entityarrow.setDamage(getMobAttack());
+    	        entityarrow.pickupStatus = EntityArrow.PickupStatus.DISALLOWED;
+    	        world.spawnEntity(entityarrow);
+    		}
+    		this.attackTimer = 10;
+            world.playSound((EntityPlayer)null, this.getPosition().up((int) this.getEyeHeight()), SoundEvents.ENTITY_SKELETON_SHOOT, SoundCategory.HOSTILE, this.getSoundVolume(), 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
+    	}
     }
 
 	public EnumSoundType getSoundType() 

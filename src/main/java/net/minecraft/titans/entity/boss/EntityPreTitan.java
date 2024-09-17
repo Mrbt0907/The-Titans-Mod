@@ -10,7 +10,8 @@ import net.endermanofdoom.mac.music.IMusicInteractable;
 import net.endermanofdoom.mac.util.chunk.MobChunkLoader;
 import net.endermanofdoom.mca.EnumSoundType;
 import net.endermanofdoom.mca.ISoundSupport;
-import net.endermanofdoom.mca.MCA;
+import net.endermanofdoom.mca.entity.projectile.EntityArrowOther;
+import net.endermanofdoom.mca.entity.projectile.EntityWitherSkullShared;
 import net.endermanofdoom.mca.registrey.MCASounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -26,7 +27,6 @@ import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityFireball;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +40,7 @@ import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -184,26 +185,37 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 			super.onLivingUpdate();
 			
 			this.hurtResistantTime = 0;
-			motionY -= 0.3D;
+			motionY -= (this.getVariant() * 0.05D);
+        	if (motionX > 4)
+        	this.motionX = 4;
+        	if (motionZ > 4)
+        	this.motionZ = 4;
+        	if (motionX < -4)
+        	this.motionX = -4;
+        	if (motionZ < -4)
+        	this.motionZ = -4;
+        	if (motionY > 8)
+        	this.motionY = 8;
 			
 	        if (this.isEntityAlive())
 	        {
 	            this.heal(0.001F * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
 	        	if (deathTicks <= 0)
-	        	world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(-motionX, motionY, -motionZ)).forEach(entity ->
+	        	world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().offset(motionX, motionY, motionZ).grow(0.01D)).forEach(entity ->
 	    		{
-	    			if (entity instanceof EntityArrow && ((EntityArrow)entity).shootingEntity != null && ((EntityArrow)entity).shootingEntity instanceof EntityPreTitan)
-	    			{}
-	    			else if (entity.height <= (entity instanceof EntityFireball ? 1F : 8F) && !(entity instanceof EntityPreTitan) && entity.isNonBoss() && entity.getEntityBoundingBox().intersects(getEntityBoundingBox()))
+	    			if (entity.height <= this.height * 0.5 && !entity.noClip && !(entity instanceof EntityFireball) && !(entity instanceof EntityArrowOther) && entity.isNonBoss() && entity.getEntityBoundingBox().intersects(getEntityBoundingBox()))
 	    			{
-	    				if (entity instanceof EntityLivingBase)
+	    				world.playSound((EntityPlayer)null, entity.getPosition(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.HOSTILE, 0.25F, 2F);
+	    				if (entity instanceof EntityLivingBase && !(entity instanceof EntityPreTitan))
 	    				entity.attackEntityFrom(DamageSource.causeMobDamage(this), (getSizeMultiplier() * 10) - this.getDistance(entity));
 	                    double d2 = entity.posX - this.posX;
 	                    double d3 = entity.posZ - this.posZ;
 	                    double d4 = d2 * d2 + d3 * d3;
 	                    if (this.getDistance(entity) >= 1D)
 	                    entity.addVelocity(d2 / d4 * this.getSizeMultiplier() * 0.25D, this.getSizeMultiplier() / 24D, d3 / d4 * this.getSizeMultiplier() * 0.25D);
+	    				if (entity instanceof EntityPlayerMP)
+	    				((EntityPlayerMP)entity).connection.sendPacket(new SPacketEntityVelocity((EntityPlayerMP)entity));
 	    			}
 	    		});
 	        }
@@ -228,10 +240,11 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 				this.getLookHelper().setLookPositionWithEntity(getAttackTarget(), 10, 50);
 				this.getMoveHelper().setMoveTo(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 1D);
 
-				if (this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + getSizeMultiplier() && attackTimer <= 0)
+				if (attackTimer <= 0 && !world.isRemote)
+				if (this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + getSizeMultiplier())
 					this.attackEntityAsMob(getAttackTarget());
-				
-				this.attackEntityWithRangedAttack(getAttackTarget(), 1F);
+				else
+					this.attackEntityWithRangedAttack(getAttackTarget(), 1F);
 				
 				if ((this.getAttackTarget().posY > this.posY + height + getAttackTarget().height + 4D || this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + getSizeMultiplier()) && rand.nextInt(200 - (int)((getAttackTarget().posY - posY >= 190 ? 190 : getAttackTarget().posY - posY))) == 0 && (this.onGround || posY <= 1.0D))
 				{
@@ -242,17 +255,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		        	double hor = f21 / this.getDistance(getAttackTarget()) * (this.getDistance(getAttackTarget()) * 0.1D);
 		        	this.motionX = (d01 / f21 * hor * hor + this.motionX * hor);
 		        	this.motionZ = (d11 / f21 * hor * hor + this.motionZ * hor);
-		        	if (motionX > 4)
-		        	this.motionX = 4;
-		        	if (motionZ > 4)
-		        	this.motionZ = 4;
-		        	if (motionX < -4)
-		        	this.motionX = -4;
-		        	if (motionZ < -4)
-		        	this.motionZ = -4;
 					motionY += this.getSizeMultiplier();
-		        	if (motionY > 8)
-		        	this.motionY = 8;
 				}
 					
 				if (!this.getAttackTarget().isEntityAlive() || getDistance(getAttackTarget()) > 32D * this.getSizeMultiplier())
@@ -566,11 +569,8 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 	                if (!this.world.isRemote && this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot"))
 	                {
 	                    this.dropLoot(true, 0, getLastDamageSource());
-						for (EntityPlayer entityplayer : world.playerEntities)
-						{
-			                if (entityplayer.isEntityAlive() && !entityplayer.isSpectator())
-	    	                	MCA.dropXP(this, entityplayer.posX, entityplayer.posY, entityplayer.posZ, (experienceValue * ((int)getVariant() + 1)));
-						}
+	                	for (EntityPlayer entityplayer : world.playerEntities)
+							entityplayer.addExperience(experienceValue * ((int)getVariant() + 1));
 	                }
 					this.setDead();
 					this.spawnExplosionParticle();
@@ -775,13 +775,13 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		    	String supression = null;
 		    	
 		    	if (this.getVariant() >= 63)
-		    		supression = I18n.format("entity.titan.level4.name");
+		    		supression = I18n.format("entity.suppression.1.name");
 		    	else if (this.getVariant() >= 31)
-		    		supression = I18n.format("entity.titan.level3.name");
+		    		supression = I18n.format("entity.suppression.2.name");
 		    	else if (this.getVariant() >= 15)
-		    		supression = I18n.format("entity.titan.level2.name");
+		    		supression = I18n.format("entity.suppression.3.name");
 		    	else if (this.getVariant() >= 7)
-		    		supression = I18n.format("entity.titan.level1.name");
+		    		supression = I18n.format("entity.suppression.4.name");
 		    	
 		    	String name = I18n.format("entity." + EntityList.getEntityString(getBaseMob()) + ".name");
 		        if (this.hasCustomName())
@@ -790,7 +790,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		        if (supression != null)
 		        	return name + " " + I18n.format("entity.titan.name") + " " + supression;
 		        else
-		        	return name + " " + I18n.format("entity.demititan.name");
+		        	return name + " " + I18n.format("entity.demi.name") + "-" + I18n.format("entity.titan.name");
 		    }
 
 			protected EntityLiving getBaseMob() 
