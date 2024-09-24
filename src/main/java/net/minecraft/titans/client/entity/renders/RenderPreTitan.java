@@ -28,6 +28,10 @@ public abstract class RenderPreTitan<T extends EntityPreTitan> extends RenderLiv
 	{
 		float f1 = titan.getRenderSizeMultiplier();
 		GL11.glScalef(f1, f1, f1);
-		shadowSize = titan.getBaseWidth() * f1;
+		shadowSize = titan.getBaseWidth() * f1 * 0.8F;
+		if (this.getDeathMaxRotation(titan) == 180F)
+		{
+			GL11.glTranslatef(0, titan.deathTime * 0.015F, 0);
+		}
 	}
 }

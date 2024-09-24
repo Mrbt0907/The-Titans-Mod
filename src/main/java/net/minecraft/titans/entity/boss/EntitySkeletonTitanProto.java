@@ -7,6 +7,7 @@ import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mca.EnumSoundType;
 import net.endermanofdoom.mca.MCA;
 import net.endermanofdoom.mca.entity.projectile.EntityArrowOther;
+import net.endermanofdoom.mca.registrey.MCASounds;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -16,9 +17,11 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.titans.registries.TSounds;
@@ -62,16 +65,8 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SKELETON_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? (this.getSizeMultiplier()  > 2 ? MCASounds.largefoostep : SoundEvents.ENTITY_SKELETON_STEP) : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
 	}
-
-    /**
-     * Gets the pitch of living sounds in living entities.
-     */
-    protected float getSoundPitch()
-    {
-        return (this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.75F : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.25F) - (this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSizeMultiplier() * 0.05F : this.getSizeMultiplier() * 0.01F);
-    }
 
     public float getEyeHeight()
     {
@@ -159,15 +154,15 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
 	public double getMobHealth() 
 	{
 		double hp = MCA.caclculateValue(world, 7000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
-		
-		if (this.getVariant() > 7)
-			hp *= 4D;
-		
-		if (this.getVariant() >= 63)
-			hp *= 20D;
-		
-		if (world.playerEntities.size() > 1)
-			hp *= world.playerEntities.size();
+
+    	if (this.getVariant() >= 63)
+    		hp *= 10;
+    	if (this.getVariant() >= 31)
+    		hp *= 5;
+    	if (this.getVariant() >= 15)
+    		hp *= 2;
+    	if (this.getVariant() >= 7)
+    		hp *= 2;
 		
 		return hp <= 20 ? 20 : hp;
 	}
@@ -176,8 +171,14 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
 	{
 		double attack = MCA.caclculateValue(world, 8D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
-		if (this.getVariant() > 7)
-			attack *= 5D;
+    	if (this.getVariant() >= 63)
+    		attack *= 10;
+    	if (this.getVariant() >= 31)
+    		attack *= 5;
+    	if (this.getVariant() >= 15)
+    		attack *= 2;
+    	if (this.getVariant() >= 7)
+    		attack *= 2;
 		
 		return attack;
 	}
@@ -194,7 +195,7 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
     
 	public int[] getBarColor() 
 	{
-		return new int[] {240 - (getVariant() / 2), 240 - (getVariant() / 2), 240 - (getVariant() / 2)};
+		return new int[] {240 - getVariant(), 240 - getVariant(), 240 - getVariant()};
 	}
 
 	@Override
@@ -215,6 +216,18 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
 	{
 		return new EntitySkeleton(world);
 	}
+
+    @Nullable
+    protected Item getDropItem()
+    {
+    	switch (rand.nextInt(20))
+    	{
+    	case 0:
+    		return Item.getItemFromBlock(Blocks.BONE_BLOCK);
+    	default:
+    		return rand.nextBoolean() ? Items.ARROW : Items.BONE;
+    	}
+    }
     
     /**
      * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
@@ -223,19 +236,6 @@ public class EntitySkeletonTitanProto extends EntityPreTitan
     @Nullable
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
     {
-        this.setVariant(0);
-
-        for (int i = 0; i < 7; ++i)
-        {
-            this.setVariant(i);
-            if (rand.nextFloat() >= 0.5F)
-            	break;
-        }
-
-    	if (this.getVariant() >= 7)
-            this.setVariant(7);
-
-        this.ignite();
         this.setEquipmentBasedOnDifficulty(difficulty);
         this.setEnchantmentBasedOnDifficulty(difficulty);
     	

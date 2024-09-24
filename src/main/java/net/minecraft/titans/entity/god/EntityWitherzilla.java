@@ -34,6 +34,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.fml.relauncher.Side;
@@ -663,7 +664,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 
 	public boolean isInOmegaForm()
 	{
-		return this.getHealthD() <= this.getMaxHealthD() * 0.5D;
+		return this.getHealthD() <= this.getMaxHealthD() * 0.5D || world.provider instanceof WorldProviderSurface;
 	}
 
 	@Override
@@ -716,11 +717,11 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	}
 
 	public double getMobHealth() {
-		return MCA.caclculateValue(world, 600D * getSizeMultiplier() * this.getTier().getMultiplier());
+		return Double.MAX_VALUE;
 	}
 
 	public double getMobAttack() {
-		return MCA.caclculateValue(world, 32D * getSizeMultiplier() * this.getTier().getMultiplier());
+		return Double.MAX_VALUE;
 	}
 
 	public double getMobSpeed() {

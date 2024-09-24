@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerElytra;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
-import net.minecraft.titans.entity.boss.EntityZombieTitanProto;
+import net.minecraft.titans.entity.boss.EntityHuskTitanProto;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
@@ -14,9 +14,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderZombieTitanProto extends RenderPreTitan<EntityZombieTitanProto>
+public class RenderHuskTitanProto extends RenderPreTitan<EntityHuskTitanProto>
 {
-    public RenderZombieTitanProto(RenderManager p_i47204_1_)
+    public RenderHuskTitanProto(RenderManager p_i47204_1_)
     {
         super(p_i47204_1_, new ModelZombie(), 0.5F);
         this.addLayer(new LayerElytra(this));
@@ -32,7 +32,7 @@ public class RenderZombieTitanProto extends RenderPreTitan<EntityZombieTitanProt
         this.addLayer(layerbipedarmor);
     }
 
-    protected void applyRotations(EntityZombieTitanProto entityLiving, float p_77043_2_, float rotationYaw, float partialTicks)
+    protected void applyRotations(EntityHuskTitanProto entityLiving, float p_77043_2_, float rotationYaw, float partialTicks)
     {
         GlStateManager.rotate(180.0F - rotationYaw, 0.0F, 1.0F, 0.0F);
 
@@ -75,12 +75,12 @@ public class RenderZombieTitanProto extends RenderPreTitan<EntityZombieTitanProt
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EntityZombieTitanProto entity)
+    protected ResourceLocation getEntityTexture(EntityHuskTitanProto entity)
     {
-        return new ResourceLocation("textures/entity/zombie/zombie.png");
+        return new ResourceLocation("textures/entity/zombie/husk.png");
     }
 
-	public boolean shouldSpecialRender(EntityZombieTitanProto titan) 
+	public boolean shouldSpecialRender(EntityHuskTitanProto titan) 
 	{
 		return false;
 	}

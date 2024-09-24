@@ -12,7 +12,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntityHusk;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -26,42 +26,42 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
-public class EntityPigZombieTitanProto extends EntityPreTitan
+public class EntityHuskTitanProto extends EntityPreTitan
 {
-    public EntityPigZombieTitanProto(World worldIn) {
+    public EntityHuskTitanProto(World worldIn) {
 		super(worldIn);
-		this.experienceValue = 5000;
+		this.experienceValue = 3000;
 	}
+	
+    public void ignite()
+    {
+    	super.ignite();
+    	
+    	playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 10F, 1F);
+    }
 	
 	protected SoundEvent getAmbientSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_PIG_AMBIENT : TSounds.get("titan.pigzombie.living");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_HUSK_AMBIENT : TSounds.get("titan.zombie.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_PIG_HURT : TSounds.get("titan.pigzombie.grunt");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_HUSK_HURT : TSounds.get("titan.zombie.grunt");
 	}
 	
 	protected SoundEvent getDeathSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_ZOMBIE_PIG_DEATH : TSounds.get("titan.pigzombie.death");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_HUSK_DEATH : TSounds.get("titan.zombie.death");
 	}
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? (this.getSizeMultiplier()  > 2 ? MCASounds.largefoostep : SoundEvents.ENTITY_ZOMBIE_STEP) : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? (this.getSizeMultiplier()  > 2 ? MCASounds.largefoostep : SoundEvents.ENTITY_HUSK_STEP) : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
 	}
-
-    /**
-     * Gets the pitch of living sounds in living entities.
-     */
-    protected float getSoundPitch()
-    {
-        return (this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.75F : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.25F) - (this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSizeMultiplier() * 0.05F : this.getSizeMultiplier() * 0.01F);
-    }
 
     public float getEyeHeight()
     {
@@ -96,9 +96,6 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
 	public void onLivingUpdate()
 	{
 		super.onLivingUpdate();
-		
-		if (this.getAttackTarget() != null && rand.nextFloat() <= 0.01F)
-			this.playSound(SoundEvents.ENTITY_ZOMBIE_PIG_ANGRY, this.getSoundVolume(), 2F - (this.getSizeMultiplier() * 0.05F));
 		
 		if (this.getVariant() >= 63 && !world.isRemote)
 		{
@@ -146,7 +143,20 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
     {
         super.setEquipmentBasedOnDifficulty(difficulty);
-        this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
+
+        if (this.rand.nextFloat() < (this.world.getDifficulty() == EnumDifficulty.HARD ? 0.05F : 0.01F))
+        {
+            int i = this.rand.nextInt(3);
+
+            if (i == 0)
+            {
+                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+            }
+            else
+            {
+                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
+            }
+        }
     }
 
 	public double getMobHealth() 
@@ -167,7 +177,7 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 28D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = MCA.caclculateValue(world, 14D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
     	if (this.getVariant() >= 63)
     		attack *= 10;
@@ -183,17 +193,17 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
 
 	public double getMobSpeed() 
 	{
-		double speed = 1D - (getSizeMultiplier() * 0.075);
-
-		if (speed <= 0.325D)
-			speed = 0.325D;
+		double speed = 0.75D - (getSizeMultiplier() * 0.05);
+		
+		if (speed <= 0.25D)
+			speed = 0.25D;
 		
 		return speed;
 	}
     
 	public int[] getBarColor() 
 	{
-		return new int[] {230 - (getVariant() / 2), 190 - (getVariant() / 2), 190 - (getVariant() / 2)};
+		return new int[] {230 - (getVariant() / 2), 210 - (getVariant() / 2), 150 - (getVariant() / 2)};
 	}
 
 	@Override
@@ -206,13 +216,14 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
 		
 		if (size <= 1F)
 			size = 1F;
+		size *= 1.0625F;
 		
 		return size;
 	}
 
 	protected EntityLiving getBaseMob() 
 	{
-		return new EntityPigZombie(world);
+		return new EntityHusk(world);
 	}
 
     @Nullable
@@ -221,19 +232,19 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
     	switch (rand.nextInt(20))
     	{
     	case 0:
-    		return Item.getItemFromBlock(Blocks.GOLD_BLOCK);
+    		return Item.getItemFromBlock(Blocks.IRON_BLOCK);
     	case 1:
     	case 2:
     	case 3:
-    		return Items.GOLD_INGOT;
     	case 4:
     	case 5:
+    		return Items.CARROT;
     	case 6:
     	case 7:
     	case 8:
     	case 9:
     	case 10:
-    		return Items.GOLD_NUGGET;
+    		return Items.POTATO;
     	default:
     		return Items.ROTTEN_FLESH;
     	}

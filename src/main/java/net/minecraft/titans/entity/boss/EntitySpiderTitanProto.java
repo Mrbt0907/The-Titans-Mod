@@ -2,18 +2,23 @@ package net.minecraft.titans.entity.boss;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nullable;
+
 import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mca.MCA;
+import net.endermanofdoom.mca.registrey.MCASounds;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -23,7 +28,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
 public class EntitySpiderTitanProto extends EntityPreTitan
@@ -117,19 +121,8 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.5F);
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.6F);
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.7F);
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SPIDER_STEP : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.8F);
+		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? (this.getSizeMultiplier()  > 2 ? MCASounds.largefoostep : SoundEvents.ENTITY_SPIDER_STEP) : TSounds.get("titan.step"), this.getSoundVolume(), this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSoundPitch() : getSoundPitch() + 0.7F);
 	}
-
-    /**
-     * Gets the pitch of living sounds in living entities.
-     */
-    protected float getSoundPitch()
-    {
-        return (this.isChild() ? (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.75F : (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.25F) - (this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? this.getSizeMultiplier() * 0.05F : this.getSizeMultiplier() * 0.01F);
-    }
 
     public float getBaseWidth()
     {
@@ -211,15 +204,15 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 	public double getMobHealth() 
 	{
 		double hp = MCA.caclculateValue(world, 5000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
-		
-		if (this.getVariant() > 7)
-			hp *= 4D;
-		
-		if (this.getVariant() >= 63)
-			hp *= 20D;
-		
-		if (world.playerEntities.size() > 1)
-			hp *= world.playerEntities.size();
+
+    	if (this.getVariant() >= 63)
+    		hp *= 10;
+    	if (this.getVariant() >= 31)
+    		hp *= 5;
+    	if (this.getVariant() >= 15)
+    		hp *= 2;
+    	if (this.getVariant() >= 7)
+    		hp *= 2;
 		
 		return hp <= 16 ? 16 : hp;
 	}
@@ -228,15 +221,21 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 	{
 		double attack = MCA.caclculateValue(world, 6D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
-		if (this.getVariant() > 7)
-			attack *= 5D;
+    	if (this.getVariant() >= 63)
+    		attack *= 10;
+    	if (this.getVariant() >= 31)
+    		attack *= 5;
+    	if (this.getVariant() >= 15)
+    		attack *= 2;
+    	if (this.getVariant() >= 7)
+    		attack *= 2;
 		
 		return attack;
 	}
 
 	public double getMobSpeed() 
 	{
-		double speed = 1.5D - (getSizeMultiplier() * 0.075);
+		double speed = 1.5D - (getSizeMultiplier() * 0.0125);
 
 		if (speed <= 0.325D)
 			speed = 0.325D;
@@ -246,7 +245,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
     
 	public int[] getBarColor() 
 	{
-		return new int[] {230 - (getVariant() / 5), 0, 0};
+		return new int[] {230 - (getVariant() / 2), 0, 0};
 	}
 
 	@Override
@@ -267,28 +266,22 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 	{
 		return new EntitySpider(world);
 	}
-    
-    /**
-     * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
-     * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory
-     */
+
     @Nullable
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
+    protected Item getDropItem()
     {
-        this.setVariant(0);
-
-        for (int i = 0; i < 7; ++i)
-        {
-            this.setVariant(i);
-            if (rand.nextFloat() >= 0.5F)
-            	break;
-        }
-
-    	if (this.getVariant() >= 7)
-            this.setVariant(7);
-
-        this.ignite();
-    	
-        return super.onInitialSpawn(difficulty, livingdata);
+    	switch (rand.nextInt(20))
+    	{
+    	case 0:
+    		return Item.getItemFromBlock(Blocks.WEB);
+    	case 1:
+    	case 2:
+    	case 3:
+    	case 4:
+    	case 5:
+    		return Items.SPIDER_EYE;
+    	default:
+    		return Items.STRING;
+    	}
     }
 }

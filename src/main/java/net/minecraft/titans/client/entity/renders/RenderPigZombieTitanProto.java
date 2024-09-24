@@ -38,23 +38,18 @@ public class RenderPigZombieTitanProto extends RenderPreTitan<EntityPigZombieTit
 
         if (!entityLiving.isEntityAlive())
         {
-            float f = ((float)entityLiving.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
+            float f = ((float)entityLiving.deathTime + partialTicks - 1.0F) / 40F;
             f = MathHelper.sqrt(f);
 
             if (f > 1.0F)
-            {
                 f = 1.0F;
-            }
-            float f1 = ((float)entityLiving.deathTicks + partialTicks - 1.0F) / 40.0F * 1.6F;
+            float f1 = ((float)entityLiving.deathTicks + partialTicks - 1.0F) / 40F;
             f1 = MathHelper.sqrt(f1);
 
-            if (f1 > 1.25F)
-            {
-                f1 = 1.25F;
-            }
-            
-            GlStateManager.translate(0, 0, f1 * entityLiving.getSizeMultiplier());
+            if (f1 > 1.0F)
+                f1 = 1.0F;
 
+            GlStateManager.translate(0, 0, f1 * entityLiving.getSizeMultiplier());
             GlStateManager.rotate(f * this.getDeathMaxRotation(entityLiving), -1.0F, 0.0F, 0.0F);
         }
         else
@@ -73,7 +68,7 @@ public class RenderPigZombieTitanProto extends RenderPreTitan<EntityPigZombieTit
             float f = 13.0F;
             float f1 = entityLiving.limbSwing - entityLiving.limbSwingAmount * (1.0F - partialTicks) + 6.0F;
             float f2 = (Math.abs(f1 % f - 6.5F) - 3.25F) / 3.25F;
-            GlStateManager.rotate((0.2F * entityLiving.getSizeMultiplier()) * f2, 0.0F, 0.0F, 1.0F);
+            GlStateManager.rotate((0.15F * entityLiving.getSizeMultiplier()) * f2, 0.0F, 0.0F, 1.0F);
         }
     }
 

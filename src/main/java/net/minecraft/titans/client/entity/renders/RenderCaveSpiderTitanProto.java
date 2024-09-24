@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.titans.entity.boss.EntityCaveSpiderTitanProto;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,6 +25,34 @@ public class RenderCaveSpiderTitanProto extends RenderPreTitan<EntityCaveSpiderT
     protected float getDeathMaxRotation(EntityCaveSpiderTitanProto entityLivingBaseIn)
     {
         return 180.0F;
+    }
+
+    protected void applyRotations(EntityCaveSpiderTitanProto entityLiving, float p_77043_2_, float rotationYaw, float partialTicks)
+    {
+        GlStateManager.rotate(180.0F - rotationYaw, 0.0F, 1.0F, 0.0F);
+
+        if (entityLiving.deathTime > 1)
+        {
+            float f = ((float)entityLiving.deathTime + partialTicks - 1.0F) / 40F;
+            f = MathHelper.sqrt(f);
+
+            if (f > 1.0F)
+            {
+                f = 1.0F;
+            }
+
+            GlStateManager.rotate(f * this.getDeathMaxRotation(entityLiving), 0.0F, 0.0F, 1.0F);
+        }
+        else
+        {
+            String s = TextFormatting.getTextWithoutFormattingCodes(entityLiving.getName());
+
+            if (s != null && ("Dinnerbone".equals(s) || "Grumm".equals(s)))
+            {
+                GlStateManager.translate(0.0F, entityLiving.height + 0.1F, 0.0F);
+                GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+            }
+        }
     }
 
     /**

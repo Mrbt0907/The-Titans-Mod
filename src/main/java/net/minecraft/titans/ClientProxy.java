@@ -40,6 +40,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpiderTitanProto.class, manager -> new RenderSpiderTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySkeletonTitanProto.class, manager -> new RenderSkeletonTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityZombieTitanProto.class, manager -> new RenderZombieTitanProto(manager));
+		RenderingRegistry.registerEntityRenderingHandler(EntityHuskTitanProto.class, manager -> new RenderHuskTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityPigZombieTitanProto.class, manager -> new RenderPigZombieTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityWitherzilla.class, manager -> new RenderWitherzilla(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityGammaLightning.class, manager -> new RenderGammaLightning(manager));
