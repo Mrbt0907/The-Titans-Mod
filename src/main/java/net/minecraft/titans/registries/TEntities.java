@@ -14,6 +14,7 @@ public class TEntities
 
 	public static void registerEntity()
 	{
+		createEntityWithEgg(EntitySilverfishTitanProto.class, "silverfish_titan_proto", 7237230, 3158064);
 		createEntityWithEgg(EntityCaveSpiderTitanProto.class, "cave_spider_titan_proto", 803406, 11013646);
 		createEntityWithEgg(EntitySpiderTitanProto.class, "spider_titan_proto", 3419431, 11013646);
 		createEntityWithEgg(EntitySkeletonTitanProto.class, "skeleton_titan_proto", 12698049, 4802889);

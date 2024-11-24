@@ -219,7 +219,7 @@ public class EntitySpiderTitanProto extends EntityPreTitan
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 6D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = 50D * this.getSizeMultiplier() * this.getTier().getMultiplier();
 
     	if (this.getVariant() >= 63)
     		attack *= 10;

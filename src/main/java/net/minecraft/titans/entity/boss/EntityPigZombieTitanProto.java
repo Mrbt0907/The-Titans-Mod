@@ -167,7 +167,7 @@ public class EntityPigZombieTitanProto extends EntityPreTitan
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 28D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = 140D * this.getSizeMultiplier() * this.getTier().getMultiplier();
 
     	if (this.getVariant() >= 63)
     		attack *= 10;

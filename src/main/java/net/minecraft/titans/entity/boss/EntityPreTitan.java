@@ -371,14 +371,16 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 					        float f2 = (float)(this.posZ - getAttackTarget().posZ);
 					        
 							this.getLookHelper().setLookPositionWithEntity(getAttackTarget(), this.getHorizontalFaceSpeed(), this.getVerticalFaceSpeed());
+							this.getMoveHelper().setMoveTo(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 1D);
 							
 							if (attackTimer <= 0 && !world.isRemote)
 							if (MathHelper.sqrt(f * f + f1 * f1 + f2 * f2) <= width + getAttackTarget().width + (this.getSizeMultiplier() * 0.8F))
+							{
 								this.attackEntityAsMob(getAttackTarget());
+							}
 							else
 							{
 								this.attackEntityWithRangedAttack(getAttackTarget(), 1F);
-								this.getMoveHelper().setMoveTo(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 1D);
 								
 								if ((this.getAttackTarget().posY > this.posY + height + getAttackTarget().height + 4D || this.getDistance(this.getAttackTarget()) <= width + getAttackTarget().width + getSizeMultiplier()) && rand.nextInt(200 - (int)((getAttackTarget().posY - posY >= 190 ? 190 : getAttackTarget().posY - posY))) == 0 && (this.onGround || posY <= 1.0D))
 								{
@@ -511,7 +513,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 	    		{
     				if (!(entity instanceof EntityFireball))
 	    			entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float)((int)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue() * 0.25D));
-    				if (!(entity instanceof EntityPreTitan) && !(entity instanceof EntityFireball))
+    				if (!(entity instanceof EntityFireball))
     					attackWithAdditionalEffects(entity);
 	    		});
 	        }
@@ -546,9 +548,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 			amount *= 1.5D;
 			if (entity instanceof EntityLivingBase)
 			{
-				amount *= (1D - ((EntityLivingBase) entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getBaseValue());
-				if (amount > 0)
-				((EntityLivingBase)entity).prevRenderYawOffset = ((EntityLivingBase)entity).renderYawOffset = ((EntityLivingBase)entity).prevRotationYaw = ((EntityLivingBase)entity).rotationYaw = ((EntityLivingBase)entity).prevRotationYawHead = ((EntityLivingBase)entity).rotationYawHead = this.rotationYawHead;
+				amount *= (2D - ((EntityLivingBase) entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getBaseValue());
 			}
 				float xRatio = MathHelper.sin(this.rotationYawHead * 0.017453292F);
 				float zRatio = -MathHelper.cos(this.rotationYawHead * 0.017453292F);
@@ -677,6 +677,10 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		    			world.removeEntity(this);
 					}
 	            }
+
+	            if (this.deathTicks == 100)
+					for (EntityPlayer entityplayer : world.playerEntities)
+					world.playSound(entityplayer, getPosition(), this.getSizeMultiplier() > 7 ? TSounds.get("titan.fall") : MCASounds.heavyfall, this.getSoundCategory(), getSoundVolume(), getSizeMultiplier() >= 23 ? 0.75F : 1F);
 				
 	            if (this.deathTicks >= 140)
 				if (this.getVariant() <= 0)
@@ -731,9 +735,6 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		            for (int i = 0; i <= this.getSizeMultiplier() + 2 * 4; ++i)
 		            this.world.spawnParticle(EnumParticleTypes.FIREWORKS_SPARK, this.posX + (double)f, this.posY + (double)f1, this.posZ + (double)f2, 0.0D, 0.0D, 0.0D);
             	}
-            	
-            	if (this.deathTime == 40)
-            		this.playSound(this.getSizeMultiplier() > 7 ? TSounds.get("titan.fall") : MCASounds.heavyfall, this.getSizeMultiplier(), getSizeMultiplier() >= 23 ? 0.75F : 1F);
 			}
 
 			public void attackEntityWithRangedAttack(EntityLivingBase target, float p_82196_2_)
@@ -922,16 +923,12 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		    	if (this.getInvulTime() > 0 || this.deathTicks > 0)
 		    		return null;
 
-		    	if (this.getVariant() >= 63)
-		    		return MCASounds.MUSIC_BOSS_DRAGON;
-		    	else if (this.getVariant() >= 31)
-		    		return MCASounds.MUSIC_BOSS_DRAGON;
-		    	else if (this.getVariant() >= 15)
-		    		return MCASounds.MUSIC_BOSS_WITHER;
+		    	if (this.getVariant() >= 15)
+		    		return MCASounds.MUSIC_BOSS_WATER;
 		    	else if (this.getVariant() >= 7)
-		    		return MCASounds.MUSIC_BOSS_GOLEM;
+		    		return MCASounds.MUSIC_BOSS_WITHER;
 		    	else
-		    		return MCASounds.MUSIC_BOSS_GEN2ZOMBIE;
+		    		return MCASounds.MUSIC_BOSS_UNDEAD;
 		    }
 
 		    /**

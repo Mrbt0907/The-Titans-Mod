@@ -36,6 +36,7 @@ public class ClientProxy extends CommonProxy
 	
 	public void renderEntities()
 	{
+		RenderingRegistry.registerEntityRenderingHandler(EntitySilverfishTitanProto.class, manager -> new RenderSilverfishTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntityCaveSpiderTitanProto.class, manager -> new RenderCaveSpiderTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySpiderTitanProto.class, manager -> new RenderSpiderTitanProto(manager));
 		RenderingRegistry.registerEntityRenderingHandler(EntitySkeletonTitanProto.class, manager -> new RenderSkeletonTitanProto(manager));
