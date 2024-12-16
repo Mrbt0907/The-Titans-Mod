@@ -177,7 +177,7 @@ public class EntityZombieTitanProto extends EntityPreTitan
 
 	public double getMobAttack() 
 	{
-		double attack = MCA.caclculateValue(world, 14D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double attack = 70D * this.getSizeMultiplier() * this.getTier().getMultiplier();
 
     	if (this.getVariant() >= 63)
     		attack *= 10;
@@ -198,12 +198,18 @@ public class EntityZombieTitanProto extends EntityPreTitan
 		if (speed <= 0.25D)
 			speed = 0.25D;
 		
+		if (this.getHealth() <= this.getMaxHealth() * 0.5)
+			speed *= 2D;
+		
+		if (this.getHealth() <= this.getMaxHealth() * 0.25)
+			speed *= 2D;
+		
 		return speed;
 	}
     
 	public int[] getBarColor() 
 	{
-		return new int[] {0, 220 - (getVariant() / 3), 100 - (getVariant() / 5)};
+		return new int[] {0, 220 - getVariant(), 100 - (getVariant() / 3)};
 	}
 
 	@Override

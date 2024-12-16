@@ -5,75 +5,57 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.endermanofdoom.mac.util.math.Maths;
 import net.endermanofdoom.mca.MCA;
-import net.endermanofdoom.mca.registrey.MCASounds;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntityHusk;
+import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
-public class EntityHuskTitanProto extends EntityPreTitan
+public class EntitySilverfishTitanProto extends EntityPreTitan
 {
-    public EntityHuskTitanProto(World worldIn) {
+    public EntitySilverfishTitanProto(World worldIn) {
 		super(worldIn);
-		this.experienceValue = 3000;
+		this.experienceValue = 600;
 	}
 	
     public void ignite()
     {
     	super.ignite();
     	
-    	playSound(SoundEvents.ENTITY_HUSK_AMBIENT, 10F, 1F);
+    	playSound(SoundEvents.ENTITY_SILVERFISH_AMBIENT, 10F, 1F);
     }
 	
 	protected SoundEvent getAmbientSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_HUSK_AMBIENT : TSounds.get("titan.zombie.living");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SILVERFISH_AMBIENT : TSounds.get("titan.silverfish.living");
 	}
 	
 	protected SoundEvent getHurtSound(DamageSource source)
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_HUSK_HURT : TSounds.get("titan.zombie.grunt");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SILVERFISH_HURT : TSounds.get("titan.silverfish.grunt");
 	}
 	
 	protected SoundEvent getDeathSound()
 	{
-		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_HUSK_DEATH : TSounds.get("titan.zombie.death");
+		return this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? SoundEvents.ENTITY_SILVERFISH_DEATH : TSounds.get("titan.silverfish.death");
 	}
 	
 	protected void playStepSound(BlockPos pos, Block blockIn)
 	{
-		playSound(this.getSizeMultiplier() <= 7 || this.ticksExisted <= 1 ? (this.getSizeMultiplier()  > 2 ? MCASounds.largefoostep : SoundEvents.ENTITY_HUSK_STEP) : TSounds.get("titan.step"), this.getSoundVolume(), this.getSoundPitch());
 	}
-
-    public float getEyeHeight()
-    {
-        float f = 1.74F;
-
-        if (this.isChild())
-        {
-            f = (float)((double)f - 0.81D);
-        }
-
-        return f * getSizeMultiplier();
-    }
 
     /**
      * (abstract) Protected helper method to write subclass entity data to NBT.
@@ -137,31 +119,9 @@ public class EntityHuskTitanProto extends EntityPreTitan
 		}
 	}
 
-    /**
-     * Gives armor or weapon for entity based on given DifficultyInstance
-     */
-    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
-    {
-        super.setEquipmentBasedOnDifficulty(difficulty);
-
-        if (this.rand.nextFloat() < (this.world.getDifficulty() == EnumDifficulty.HARD ? 0.05F : 0.01F))
-        {
-            int i = this.rand.nextInt(3);
-
-            if (i == 0)
-            {
-                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
-            }
-            else
-            {
-                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
-            }
-        }
-    }
-
 	public double getMobHealth() 
 	{
-		double hp = MCA.caclculateValue(world, 7000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
+		double hp = MCA.caclculateValue(world, 2000D * this.getSizeMultiplier() * this.getTier().getMultiplier());
 
     	if (this.getVariant() >= 63)
     		hp *= 10;
@@ -172,12 +132,12 @@ public class EntityHuskTitanProto extends EntityPreTitan
     	if (this.getVariant() >= 7)
     		hp *= 2;
 		
-		return hp <= 20 ? 20 : hp;
+		return hp <= 8 ? 8 : hp;
 	}
 
 	public double getMobAttack() 
 	{
-		double attack = 70D * this.getSizeMultiplier() * this.getTier().getMultiplier();
+		double attack = 10D * this.getSizeMultiplier() * this.getTier().getMultiplier();
 
     	if (this.getVariant() >= 63)
     		attack *= 10;
@@ -193,17 +153,23 @@ public class EntityHuskTitanProto extends EntityPreTitan
 
 	public double getMobSpeed() 
 	{
-		double speed = 0.75D - (getSizeMultiplier() * 0.05);
+		double speed = 0.9D - (getSizeMultiplier() * 0.0125);
 		
-		if (speed <= 0.25D)
-			speed = 0.25D;
+		if (speed <= 0.5D)
+			speed = 0.5D;
+		
+		if (this.getHealth() <= this.getMaxHealth() * 0.5)
+			speed *= 2D;
+		
+		if (this.getHealth() <= this.getMaxHealth() * 0.25)
+			speed *= 2D;
 		
 		return speed;
 	}
     
 	public int[] getBarColor() 
 	{
-		return new int[] {230 - (getVariant() / 2), 210 - (getVariant() / 2), 150 - (getVariant() / 2)};
+		return new int[] {180 - getVariant(), 180 - getVariant(), 180 - getVariant()};
 	}
 
 	@Override
@@ -216,50 +182,59 @@ public class EntityHuskTitanProto extends EntityPreTitan
 		
 		if (size <= 1F)
 			size = 1F;
-		size *= 1.0625F;
 		
 		return size;
 	}
 
 	protected EntityLiving getBaseMob() 
 	{
-		return new EntityHusk(world);
+		return new EntitySilverfish(world);
 	}
+
+    public float getBaseWidth()
+    {
+    	return 0.4F;
+    }
+
+    public float getBaseHeight()
+    {
+    	return 0.3F;
+    }
+
+    public float getEyeHeight()
+    {
+        return 0.1F * getSizeMultiplier();
+    }
 
     @Nullable
     protected Item getDropItem()
     {
-    	switch (rand.nextInt(20))
-    	{
-    	case 0:
-    		return Item.getItemFromBlock(Blocks.IRON_BLOCK);
-    	case 1:
-    	case 2:
-    	case 3:
-    	case 4:
-    	case 5:
-    		return Items.CARROT;
-    	case 6:
-    	case 7:
-    	case 8:
-    	case 9:
-    	case 10:
-    		return Items.POTATO;
-    	default:
-    		return Items.ROTTEN_FLESH;
-    	}
+		return Item.getItemFromBlock(Blocks.COBBLESTONE);
     }
-    
+
     /**
-     * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
-     * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory
+     * Get the name of this object. For players this returns their username
      */
-    @Nullable
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
+    public String getName()
     {
-        this.setEquipmentBasedOnDifficulty(difficulty);
-        this.setEnchantmentBasedOnDifficulty(difficulty);
+    	String supression = null;
     	
-        return super.onInitialSpawn(difficulty, livingdata);
+    	if (this.getVariant() >= 63)
+    		supression = I18n.format("entity.suppression.1.name");
+    	else if (this.getVariant() >= 31)
+    		supression = I18n.format("entity.suppression.2.name");
+    	else if (this.getVariant() >= 15)
+    		supression = I18n.format("entity.suppression.3.name");
+    	else if (this.getVariant() >= 7)
+    		supression = I18n.format("entity.suppression.4.name");
+    	
+    	String name = I18n.format("entity." + EntityList.getEntityString(getBaseMob()) + ".name");
+        if (this.hasCustomName())
+        	name = getCustomNameTag();
+
+        if (supression != null)
+        	return I18n.format("entity.omegafish.name") + " " + supression;
+        else
+        	return name + " " + I18n.format("entity.demi.name") + "-" + I18n.format("entity.titan.name");
     }
 }
