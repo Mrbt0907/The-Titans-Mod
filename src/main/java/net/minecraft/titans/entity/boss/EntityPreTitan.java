@@ -931,7 +931,7 @@ public abstract class EntityPreTitan extends EntityLiving implements IRangedAtta
 		    	else if (this.getVariant() >= 7)
 		    		return MCASounds.MUSIC_BOSS_GOLEM;
 		    	else
-		    		return MCASounds.MUSIC_BOSS_GEN2ZOMBIE;
+		    		return MCASounds.MUSIC_BOSS_UNDEAD;
 		    }
 
 		    /**

@@ -12,6 +12,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityWitherSkull;
@@ -29,6 +31,7 @@ import net.minecraft.titans.entity.titan.EntityTitan;
 import net.minecraft.titans.registries.TItems;
 import net.minecraft.titans.registries.TSounds;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +58,12 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 			net.endermanofdoom.mac.internal.music.MusicManager.addMusicInteractable((IMusicInteractable) this);
 	}
 
+	protected boolean processInteract(EntityPlayer player, EnumHand hand)
+    {
+		world.loadedEntityList.forEach(entity -> {if (entity instanceof EntityMinecart && !this.isRiding()) this.startRiding(entity, true);});
+		return true;
+    }
+	
 	@Override
 	protected List<EntityMultiPart> onHitboxCreate(List<EntityMultiPart> hitboxes)
 	{
