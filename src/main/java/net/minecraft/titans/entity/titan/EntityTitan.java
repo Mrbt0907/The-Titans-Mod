@@ -239,7 +239,7 @@ public abstract class EntityTitan extends EntityLiving implements IMobTier, IEnt
 	/**Called upon entity creation to register hitboxes for the titan*/
 	protected List<EntityMultiPart> onHitboxCreate(List<EntityMultiPart> hitboxes)
 	{
-		//hitboxes.add(new EntityMultiPart(this, "main", 0, 0, 0, width, height, true));
+		hitboxes.add(new EntityMultiPart(this, "main", 0, 0, 0, width, height, true));
 		return hitboxes;
 	}
 	

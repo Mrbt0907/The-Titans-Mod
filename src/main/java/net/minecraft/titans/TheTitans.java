@@ -38,9 +38,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod(modid=TheTitans.MODID, name=TheTitans.MODNAME, version=TheTitans.VERSION, acceptedMinecraftVersions="[1.12.2]", dependencies="required-after:mac@[2.6,)")
 public class TheTitans 
 {
-	public static final String MODNAME = "The Titans Mod - Minecart Edition";
+	public static final String MODNAME = "The Titans Mod";
 	public static final String MODID = "thetitans";
-	public static final String VERSION = "0.6.2-minecart";
+	public static final String VERSION = "0.6.1-indev";
 	public static final String CLIENT = "net.minecraft.titans.ClientProxy";
 	public static final String SERVER = "net.minecraft.titans.CommonProxy";
 	@SidedProxy(clientSide=CLIENT, serverSide=SERVER)
