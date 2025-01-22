@@ -1,29 +1,45 @@
 buildscript
 {
-    repositories
-    {
-        jcenter()
+	repositories
+	{
+		jcenter()
 		maven { url = "https://files.minecraftforge.net/maven" }
+		maven
+		{
+			name = 'sponge'
+			url = 'https://repo.spongepowered.org/repository/maven-public'
+		}
 	}
-	dependencies {classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'}
+	dependencies
+	{
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath 'com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:1.2.4'
+	}
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
-project.mkdir "libs"
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+project.mkdir "libs"
 
+version = mod_version
+group = mod_group
+archivesBaseName = mod_name
 
-version = "0.6.1-indev"
-group= "net.minecraft.titans"
-archivesBaseName = "The Titans Mod"
-
+project.tasks.build.dependsOn project.tasks.shadowJar
 
 minecraft
 {
-    version = "1.12.2-14.23.5.2847"
-    mappings = "snapshot_20171003"
-    runDir = "run"
-    makeObfSourceJar = false
+	version = "${minecraft_version}-${forge_version}"
+	mappings = minecraft_mappings
+	makeObfSourceJar = false
+	runDir = "run"
+	clientRunArgs = ["--tweakClass", "org.spongepowered.asm.launch.MixinTweaker"]
+	serverRunArgs = ["--tweakClass", "org.spongepowered.asm.launch.MixinTweaker"]
 }
+runClient.args = ["--tweakClass", "org.spongepowered.asm.launch.MixinTweaker"]
+runServer.args = ["--tweakClass", "org.spongepowered.asm.launch.MixinTweaker"]
 
 repositories
 {
@@ -36,7 +52,28 @@ repositories
 
 dependencies
 {
-   runtime "mezz.jei:jei_1.12.2:4.13.1.225"
+	runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+}
+
+shadowJar
+{
+	mergeServiceFiles()
+	dependencies
+	{
+		exclude(dependency("mezz.jei:jei_${minecraft_version}:${jei_version}"))
+		exclude 'LICENSE.txt', 'module-info.class', 'META-INF/maven/**', 'META-INF/fml_cache_annotation.json', 'META-INF/fml_cache_class_versions.json', 'META-INF/*.RSA', 'META-INF/*.SF'
+	}
+	
+	manifest.attributes (
+		'FMLAT': "${mod_id}_at.cfg",
+		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+		'MixinConfigs': "META-INF/${mod_util}_mixin.json",
+		'FMLCorePluginContainsFMLMod': 'true',
+        'ForceLoadAsMod': 'true'
+	)
+    relocate 'net.mrbt0907.util', 'net.mrbt0907.thetitans.util'
+	classifier null
+    finalizedBy 'reobfJar'
 }
 
 processResources
@@ -49,6 +86,4 @@ processResources
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
     from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
-    rename '(.+_at.cfg)', 'META-INF/$1'
 }
-jar { manifest{attributes 'FMLAT': 'ender_at.cfg'} }
