@@ -14,13 +14,13 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.mrbt0907.thetitans.registries.SoundRegistry;
-import net.mrbt0907.thetitans.util.DamageSourceTitan;
+import net.mrbt0907.thetitans.util.DamageSources;
 
 public class BaseTitanSword extends BaseSword
 {
 	public BaseTitanSword(ItemMaterial material)
 	{
-		super(material.getToolMaterial(), 0.0D);
+		super(material.getToolMaterial(), 90.0D);
 	}
 
 	public EnumAction getItemUseAction(ItemStack p_77661_1_)
@@ -42,7 +42,7 @@ public class BaseTitanSword extends BaseSword
 			double dy = entityLiving.getEyeHeight() + vec3.y * getRange();
 			double dz = vec3.z * getRange();
 			List<Entity> entities = entityLiving.world.getEntitiesWithinAABBExcludingEntity(entityLiving, entityLiving.getEntityBoundingBox().expand(getRange() * multiplier, getRange() * 0.5D * multiplier, getRange() * multiplier).offset(dx, dy, dz));
-			DamageSource source = DamageSourceTitan.causeTitanDamage(entityLiving);
+			DamageSource source = DamageSources.causeTitanDamage(entityLiving);
 				
 			for (Entity entity : entities)
 			{
@@ -63,7 +63,7 @@ public class BaseTitanSword extends BaseSword
 					else if (entity instanceof EntityLivingBase && entity.isEntityAlive() && (entityLiving instanceof EntityPlayer || true))
 						hitEntity(stack, (EntityLivingBase) entity, entityLiving);
 					else if (entity instanceof MultiPartEntityPart)
-						entity.attackEntityFrom(DamageSourceTitan.causeTitanDamage(entityLiving), getAttackDamage());
+						entity.attackEntityFrom(DamageSources.causeTitanDamage(entityLiving), getAttackDamage());
 				}
 			}
 		}
@@ -74,7 +74,7 @@ public class BaseTitanSword extends BaseSword
 		if (target != null)
 		{
 			stack.damageItem(1, target);
-			target.attackEntityFrom(DamageSourceTitan.causeTitanDamage(attacker), getAttackDamage());
+			target.attackEntityFrom(DamageSources.causeTitanDamage(attacker), getAttackDamage());
 		}
 
 		return true;

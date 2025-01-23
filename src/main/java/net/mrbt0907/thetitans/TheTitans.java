@@ -17,10 +17,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.mrbt0907.thetitans.config.ConfigMain;
 import net.mrbt0907.thetitans.event.GameEventHandler;
-import net.mrbt0907.thetitans.network.NetworkHandler;
+import net.mrbt0907.thetitans.network.NetworkReciever;
 import net.mrbt0907.thetitans.registries.*;
 import net.mrbt0907.thetitans.world.WorldProviderVoid;
+import net.mrbt0907.util.MrbtAPI;
+import net.mrbt0907.util.network.NetworkHandler;
 
 @Mod(modid=TheTitans.MODID, name=TheTitans.MODNAME, version=TheTitans.VERSION, acceptedMinecraftVersions="[1.12.2]", dependencies="required-after:mac@[2.6,)")
 public class TheTitans 
@@ -34,6 +37,7 @@ public class TheTitans
 	public static CommonProxy proxy;
 	@Mod.Instance
 	public static TheTitans instance;
+	public static final NetworkReciever NETWORK = new NetworkReciever();
 	private static Logger logger;
 	public static boolean debug_mode = true;
 	
@@ -47,13 +51,16 @@ public class TheTitans
 	public static final int DIMENSION_VOID_ID = 312;
 	public static final int DIMENSION_NOWHERE_ID = 313;
 	public static final DimensionType DIMENSION_VOID = DimensionType.register("The Void", "_void", DIMENSION_VOID_ID, WorldProviderVoid.class, false);
+	
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent e)
 	{
+		MrbtAPI.initialize(MODID, instance);
 		logger = e.getModLog();
 		ConfigManager.sync(MODID, Config.Type.INSTANCE);
 		info("Loading The Titans Mod...");
 		debug("Pre-Initialization started");
+		NetworkHandler.register(NETWORK);
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new GameEventHandler());
 		MinecraftForge.EVENT_BUS.register(BlockRegistry.class);
@@ -64,7 +71,7 @@ public class TheTitans
 		DimensionManager.registerDimension(DIMENSION_VOID_ID, DIMENSION_VOID);
 		//DimensionManager.registerDimension(DIMENSION_NOWHERE_ID, DIMENSION_NOWHERE);
 		
-		NetworkHandler.preInit();
+		MrbtAPI.preInit(e);
 		proxy.preInit(e);
 		debug("Pre-Initialization finished");
 	}
@@ -73,6 +80,7 @@ public class TheTitans
 	public void init(FMLInitializationEvent e)
 	{
 		debug("Initialization started");
+		MrbtAPI.init(e);
 		proxy.init(e);
 		debug("Initialization finished");
 	}
@@ -81,6 +89,7 @@ public class TheTitans
 	public void postInit(FMLPostInitializationEvent e)
 	{
 		debug("Post-Initialization started!");
+		MrbtAPI.postInit(e);
 		proxy.postInit(e);
 		debug("Post-Initialization finished");
 		info("Finished The Titans Mod!");
@@ -106,14 +115,14 @@ public class TheTitans
 	
 	public static void debug(Object message)
 	{
-		boolean isDebug = TitanConfig.debug_mode;
+		boolean isDebug = ConfigMain.debug_mode;
 		if (isDebug)
 			logger.info("[DEBUG] " + message);
 	}
 	
 	public static void warn(Object message)
 	{
-		boolean isDebug = TitanConfig.debug_mode;
+		boolean isDebug = ConfigMain.debug_mode;
 		if (isDebug)
 			logger.warn(message);
 	}

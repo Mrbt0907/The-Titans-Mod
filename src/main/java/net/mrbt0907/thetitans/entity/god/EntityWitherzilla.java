@@ -18,7 +18,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -29,7 +28,7 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.mrbt0907.thetitans.TheTitans;
-import net.mrbt0907.thetitans.api.EnumMobTier;
+import net.mrbt0907.thetitans.config.ConfigMain;
 import net.mrbt0907.thetitans.entity.EntityMultiPart;
 import net.mrbt0907.thetitans.entity.EntityUrLightning;
 import net.mrbt0907.thetitans.entity.titan.EntityTitan;
@@ -48,7 +47,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	public EntityWitherzilla(World worldIn)
 	{
 		super(worldIn);
-		experienceValue = 5000000;
+		experienceValue = ConfigMain.tab_titans.tab_witherzilla.experience;
 	}
 
 	@Override
@@ -66,11 +65,11 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	protected void applyEntityAttributes()
 	{
 		super.applyEntityAttributes();
-		getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
-		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(1000000.0D);
-		getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(100000.0D);
+		getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(ConfigMain.tab_titans.tab_witherzilla.movement_speed);
+		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(ConfigMain.tab_titans.tab_witherzilla.attack_damage);
+		getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(ConfigMain.tab_titans.tab_witherzilla.armor);
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(getSizeMultiplier() * 1.5D);
-		setMaxHealth(1000000000000000000D);
+		setMaxHealth(ConfigMain.tab_titans.tab_witherzilla.health);
 		setHealthD(getMaxHealthD());
 
 	}
@@ -83,29 +82,21 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 
 	public void writeEntityToNBT(NBTTagCompound tagCompound)
 	{
-		
 		tagCompound.setInteger("quoteIndex", quoteIndex);
 		super.writeEntityToNBT(tagCompound);
-		
-		
 	}
 	
 	@Override
 	public float getSizeMultiplier()
 	{
-		return isInOmegaForm() ? 1024.0F : 512.0F;
+		return isInOmegaForm() ? ConfigMain.tab_titans.tab_witherzilla.true_scale : ConfigMain.tab_titans.tab_witherzilla.scale;
 	}
 	
 	@Override
 	public float getRenderSizeMultiplier()
 	{
-		return isInOmegaForm() ? 1024.0F : 512.0F;
+		return isInOmegaForm() ? ConfigMain.tab_titans.tab_witherzilla.true_scale : ConfigMain.tab_titans.tab_witherzilla.scale;
 	}
-	
-    public void addVelocity(double x, double y, double z) 
-    {
-    	
-    }
 	
 	public void onLivingUpdate()
 	{
@@ -114,18 +105,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		this.setSize(12, 12);
 		if (world.getWorldTime() != 8000)
 			world.setWorldTime(8000);
-		
-        if (this.getHealthD() != this.getMobHealth() && this.isEntityAlive())
-        {
-    		setMaxHealth(getMobHealth());
-    		setHealthD(getMaxHealthD());
-        }
-        
-        if (this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue() != this.getMobAttack())
-        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(getMobAttack());
-
-        if (this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue() != this.getMobSpeed())
-        	this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(getMobSpeed());
 		
 		if (ticksExisted % 3 + rand.nextInt(3) == 0)
 			setCustomNameTag("\u00A7k" + TranslateUtil.translate("entity.witherzilla.name.true"));
@@ -209,7 +188,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 				worldinfo.setRaining(true);
 				worldinfo.setThundering(true);
 			}
-			
 			
 			if (rand.nextInt(250) == 0 && ticksTalked == 0L)
 				world.playerEntities.forEach(player -> onQuote(player, 4, world.provider.getDimension() == TheTitans.DIMENSION_VOID_ID ? stage : stage + 2));
@@ -473,7 +451,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 				entity.motionY += 0.5D;
 			
 			world.spawnEntity(new EntityUrLightning(world, entity.posX, entity.posY, entity.posZ, false));
-			shakeNearbyPlayerCameras(10D);
+			shakeCamera(20D, 0.125F);
 		}
 	}
 	
@@ -602,7 +580,7 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		else
 		launchWitherSkullToEntity(0, target);
 	}
-
+	
 	protected float getSoundVolume()
 	{
 		return 1000.0F;
@@ -627,9 +605,10 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		return SoundRegistry.get("witherzilla.death");
 	}
 
-	protected void onNewDeathUpdate()
+	protected void onDeathUpdate()
 	{
-		super.onNewDeathUpdate();
+		if (isEntityAlive()) return;
+		super.onDeathUpdate();
 		
 		if (isServerWorld())
 		{
@@ -665,69 +644,4 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 
 	@Override
 	public void setSwingingArms(boolean swingingArms) {}
-
-	@Override
-	public EnumMobTier getTier()
-	{
-		return EnumMobTier.ALGOD;
-	}
-
-	@Override
-	public boolean canColorHealth() {return false;}
-	
-	@Override
-	public boolean canColorStamina() {return false;}
-	
-	@Override
-	public int getNameBarStart() {return 26;}
-	
-	@Override
-	public int getHealthNameStart() {return 17;}
-	
-	@Override
-	public int getStaminaBarLength() {return 256;}
-	
-	@Override
-	public int getStaminaBarStart() {return 0;}
-	
-	@Override
-	public int getHealthBarLength() {return 256;}
-	
-	@Override
-	public ResourceLocation getBarTexture()
-	{
-		return new ResourceLocation(TheTitans.MODID, "textures/gui/titanbars/witherzilla_new.png");
-	}
-
-	public void setVariant(int type) {
-		
-	}
-
-	public int getVariant() {
-		return 0;
-	}
-
-	public double getMobHealth() {
-		return Double.MAX_VALUE;
-	}
-
-	public double getMobAttack() {
-		return Double.MAX_VALUE;
-	}
-
-	public double getMobSpeed() {
-		return 1;
-	}
-
-	public boolean isMusicDead() {
-		return false;
-	}
-
-	public int getMusicPriority() {
-		return 10000;
-	}
-
-	public SoundEvent getMusic() {
-		return SoundRegistry.get("witherzilla.theme");
-	}
 }

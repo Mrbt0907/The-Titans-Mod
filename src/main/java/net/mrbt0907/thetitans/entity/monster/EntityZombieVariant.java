@@ -5,12 +5,9 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.world.World;
-import net.mrbt0907.thetitans.api.EnumMobTier;
-import net.mrbt0907.thetitans.api.IMobTier;
-import net.mrbt0907.thetitans.api.IVariedMob;
 import net.mrbt0907.util.util.TranslateUtil;
 
-public class EntityZombieVariant extends EntityZombie implements IVariedMob, IMobTier
+public class EntityZombieVariant extends EntityZombie
 {
     private static final DataParameter<Integer> VARIANT = EntityDataManager.<Integer>createKey(EntityZombieVariant.class, DataSerializers.VARINT);
 	
@@ -135,11 +132,5 @@ public class EntityZombieVariant extends EntityZombie implements IVariedMob, IMo
 			default:
 				return 0.23D;
 		}
-	}
-
-	@Override
-	public EnumMobTier getTier()
-	{
-		return EnumMobTier.NORMAL;
 	}
 }

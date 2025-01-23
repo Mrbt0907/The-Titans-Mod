@@ -2,5 +2,27 @@
 	"parent": "item/handheld",
 	"textures": {
 		"layer0": "thetitans:items/ultima_blade"
-	}
+	},
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [ 0, -90, 55 ],
+            "translation": [ 0, 32.0, -4 ],
+            "scale": [ 27.2, 27.2, 0.85 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 0, 90, -55 ],
+            "translation": [ 0, 32.0, -4 ],
+            "scale": [ 27.2, 27.2, 0.85 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, -90, 25 ],
+            "translation": [ 1.13, 3.2, 5 ],
+            "scale": [ 21.76, 21.76, 0.68]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 90, -25 ],
+            "translation": [ 1.13, 3.2, 5 ],
+            "scale": [ 21.76, 21.76, 0.68 ]
+        }
+    }
 }

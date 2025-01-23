@@ -26,7 +26,7 @@ public abstract class RenderTitan<T extends EntityTitan> extends RenderLiving<T>
 	@Override
 	protected void preRenderCallback(T titan, float partialTickTime)
 	{
-		float f1 = titan.getRenderSizeMultiplier() * 16;
+		float f1 = titan.getRenderSizeMultiplier();
 		GL11.glScalef(f1, f1, f1);
 		shadowSize = 0.0F;
 		GL11.glRotatef(45F, 1F, 0, 0);

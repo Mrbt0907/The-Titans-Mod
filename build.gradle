@@ -58,16 +58,17 @@ dependencies
 shadowJar
 {
 	mergeServiceFiles()
+    
 	dependencies
 	{
 		exclude(dependency("mezz.jei:jei_${minecraft_version}:${jei_version}"))
-		exclude 'LICENSE.txt', 'module-info.class', 'META-INF/maven/**', 'META-INF/fml_cache_annotation.json', 'META-INF/fml_cache_class_versions.json', 'META-INF/*.RSA', 'META-INF/*.SF'
+		exclude 'LICENSE.txt', 'module-info.class', 'META-INF/maven/**', "META-INF/${mod_util}_mixin.json", "META-INF/${mod_util}_at.cfg", 'META-INF/fml_cache_annotation.json', 'META-INF/fml_cache_class_versions.json', 'META-INF/*.RSA', 'META-INF/*.SF'
 	}
-	
+    	
 	manifest.attributes (
 		'FMLAT': "${mod_id}_at.cfg",
 		'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-		'MixinConfigs': "META-INF/${mod_util}_mixin.json",
+		'MixinConfigs': "META-INF/${mod_id}_mixin.json",
 		'FMLCorePluginContainsFMLMod': 'true',
         'ForceLoadAsMod': 'true'
 	)
@@ -85,5 +86,4 @@ processResources
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-    from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
 }

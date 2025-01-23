@@ -2,9 +2,15 @@
 	"required": true,
 	"minVersion": "0.7",
 	"package": "net.mrbt0907.thetitans.util.mixin.injection",
-	"refmap": "META-INF/mrbtutil_mixin_refmap.json",
+	"refmap": "mixin.refmap.json",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
 		"MixinNetHandlerPlayServer"
-	]
+	],
+	"client": [
+		"MixinEntityRenderer"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
 }
