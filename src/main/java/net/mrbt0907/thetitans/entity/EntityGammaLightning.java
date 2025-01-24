@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.mrbt0907.thetitans.entity.titan.EntityTitan;
 import net.mrbt0907.thetitans.registries.ItemRegistry;
+import net.mrbt0907.util.mixin.CameraHandler;
 import net.mrbt0907.util.util.math.Maths;
 
 public class EntityGammaLightning extends EntityLightningBolt
@@ -43,6 +44,9 @@ public class EntityGammaLightning extends EntityLightningBolt
 		colorRed = r;
 		colorGreen = g;
 		colorBlue = b;
+		
+		if (world.isRemote)
+			CameraHandler.shakeCamera(0.25F);
 	}
 	
 	protected void entityInit()

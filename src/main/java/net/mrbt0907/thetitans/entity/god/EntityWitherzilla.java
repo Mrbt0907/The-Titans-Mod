@@ -53,7 +53,8 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	@Override
 	protected List<EntityMultiPart> onHitboxCreate(List<EntityMultiPart> hitboxes)
 	{
-		return super.onHitboxCreate(hitboxes);
+		hitboxes.add(new EntityMultiPart(this, "main", 0, 0, 0, 100.0F, 100.0F, true, true));
+		return hitboxes;
 	}
 	
 	 protected void entityInit()
@@ -69,9 +70,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 		getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(ConfigMain.tab_titans.tab_witherzilla.attack_damage);
 		getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(ConfigMain.tab_titans.tab_witherzilla.armor);
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(getSizeMultiplier() * 1.5D);
-		setMaxHealth(ConfigMain.tab_titans.tab_witherzilla.health);
-		setHealthD(getMaxHealthD());
-
 	}
 
 	public void readEntityFromNBT(NBTTagCompound tagCompund)
@@ -102,7 +100,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 	{
 		super.onLivingUpdate();
 		Entity entity = getTarget();
-		this.setSize(12, 12);
 		if (world.getWorldTime() != 8000)
 			world.setWorldTime(8000);
 		
@@ -451,7 +448,6 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 				entity.motionY += 0.5D;
 			
 			world.spawnEntity(new EntityUrLightning(world, entity.posX, entity.posY, entity.posZ, false));
-			shakeCamera(20D, 0.125F);
 		}
 	}
 	
@@ -639,9 +635,15 @@ public final class EntityWitherzilla extends EntityTitan implements IRangedAttac
 
 	public boolean isInOmegaForm()
 	{
-		return this.getHealthD() <= this.getMaxHealthD() * 0.5D || world.provider instanceof WorldProviderSurface;
+		return this.getTrueHealth() <= this.getTrueMaxHealth() * 0.5D || world.provider instanceof WorldProviderSurface;
 	}
 
 	@Override
 	public void setSwingingArms(boolean swingingArms) {}
+
+	@Override
+	public double getTrueMaxHealth() {return ConfigMain.tab_titans.tab_witherzilla.health;}
+
+	@Override
+	public double getMaxStamina() {return 100.0F;}
 }

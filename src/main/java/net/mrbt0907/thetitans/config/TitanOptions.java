@@ -11,8 +11,8 @@ public class TitanOptions
 	{
 		@Name("Max Health")
 		@Comment("The maximum amount of health this titan will have.")
-		@RangeDouble(min=0.01D, max=Float.MAX_VALUE)
-		public float health = 10000000.0F;
+		@RangeDouble(min=0.01D)
+		public double health = 10000000.0D;
 		
 		@Name("Max Armor")
 		@Comment("The maximum amount of passive armor this titan will have.")

@@ -8,21 +8,32 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MultiPartEntityPart;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.MinecraftForge;
+import net.mrbt0907.thetitans.api.event.EventProjectileHitbox;
+import net.mrbt0907.util.util.WorldUtil;
 import net.mrbt0907.util.util.math.Maths;
 
 public class EntityMultiPart extends MultiPartEntityPart
 {
+	public static final Predicate<Entity> IS_PROJECTILE = new Predicate<Entity>()
+	{
+		public boolean apply(Entity input)
+		{
+			return input instanceof IProjectile;
+		}
+	};
+	public final boolean canCrush;
 	public boolean canDamage;
 	public int xOffset;
 	public int yOffset;
 	public int zOffset;
 	
-	public EntityMultiPart(IEntityMultiPart parent, String partName, int xOffset, int yOffset, int zOffset, float width, float height, boolean canDamage)
+	public EntityMultiPart(IEntityMultiPart parent, String partName, int xOffset, int yOffset, int zOffset, float width, float height, boolean canDamage, boolean canCrush)
 	{
 		super(parent, partName, width, height);
+		this.canCrush = canCrush;
 		this.canDamage = canDamage;
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;
@@ -42,13 +53,22 @@ public class EntityMultiPart extends MultiPartEntityPart
 	
 	public void onUpdate()
 	{
-		world.getEntitiesInAABBexcluding(this, getEntityBoundingBox(), new Predicate<Entity>() { @Override public boolean apply(Entity input) {return input instanceof IProjectile;}}).forEach(entity -> 
+		WorldUtil.getEntities(this, getEntityBoundingBox(), IS_PROJECTILE).forEach(projectile -> 
 		{
-			if (entity instanceof EntityArrow)
-				attackEntityFrom(DamageSource.causeArrowDamage(((EntityArrow)entity), ((EntityArrow)entity).shootingEntity != null ? ((EntityArrow)entity).shootingEntity : ((EntityArrow)entity)), (float) (Maths.speedSq(entity.motionX, entity.motionY, entity.motionZ) * ((EntityArrow)entity).getDamage()));
-			else
-				attackEntityFrom(DamageSource.GENERIC, (float) Maths.speedSq(entity.motionX, entity.motionY, entity.motionZ) * 2.0F);
-			entity.setDead();
+			EventProjectileHitbox event = new EventProjectileHitbox(this, projectile);
+			MinecraftForge.EVENT_BUS.post(event);
+			
+			switch(event.getResult())
+			{
+				case ALLOW:
+					break;
+				case DENY:
+					projectile.setDead();
+					break;
+				default:
+					attackEntityFrom(DamageSource.GENERIC, (float) Maths.speedSq(projectile.motionX, projectile.motionY, projectile.motionZ) * 2.0F);
+					projectile.setDead();
+			}
 		});
 	}
 	

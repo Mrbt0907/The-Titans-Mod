@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
@@ -42,37 +40,36 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.mrbt0907.thetitans.TheTitans;
 import net.mrbt0907.thetitans.config.ConfigMain;
 import net.mrbt0907.thetitans.entity.EntityMultiPart;
 import net.mrbt0907.thetitans.registries.SoundRegistry;
 import net.mrbt0907.thetitans.util.DamageSources;
 import net.mrbt0907.util.mixin.CameraHandler;
 import net.mrbt0907.util.util.TranslateUtil;
+import net.mrbt0907.util.util.WorldUtil;
 import net.mrbt0907.util.util.chunk.MobChunkLoader;
 import net.mrbt0907.util.util.math.Maths;
 import net.mrbt0907.util.util.math.Vec;
 
 public abstract class EntityTitan extends EntityLiving implements IEntityMultiPart
 {
-	private static final IAttribute MAX_HEALTH = new RangedAttribute(null, "titan.maxHealth", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Max Health").setShouldWatch(true);
 	private static final IAttribute HEALTH = new RangedAttribute(null, "titan.health", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Health").setShouldWatch(true);
-	private static final IAttribute MAX_STAMINA = new RangedAttribute(null, "titan.maxStamina", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Max Stamina").setShouldWatch(true);
 	private static final IAttribute STAMINA = new RangedAttribute(null, "titan.stamina", 2000.0D, 0.0D, Double.MAX_VALUE).setDescription("Stamina").setShouldWatch(true);
 	
 	protected EntityMultiPart[] hitboxes;
 	protected int stunTicks;
 	protected int deathTicks;
 	protected int stage;
-	protected boolean isStunned;
 	protected double previousDamage;
 	protected Entity previousAttackingEntity;
 	protected long ticksTalked;
 	
 	protected Map<Float, Integer> cameraShakeDuration = new HashMap<Float, Integer>();
 	
-	public static final Predicate<EntityLivingBase> IS_NOT_TITAN = new Predicate<EntityLivingBase>()
+	public static final Predicate<Entity> IS_NOT_TITAN = new Predicate<Entity>()
 	{
-		public boolean apply(@Nullable EntityLivingBase input)
+		public boolean apply(Entity input)
 		{
 			return !(input instanceof EntityTitan);
 		}
@@ -93,14 +90,14 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	protected void applyEntityAttributes()
 	{
 		super.applyEntityAttributes();
-		getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(2000.0D);
+		getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(getTrueMaxHealth());
 		getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
 		getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(512D);
 		getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
-		getAttributeMap().registerAttribute(MAX_HEALTH);
 		getAttributeMap().registerAttribute(HEALTH);
-		getAttributeMap().registerAttribute(MAX_STAMINA);
 		getAttributeMap().registerAttribute(STAMINA);
+		setStamina(getMaxStamina());
+		setHealth(getTrueMaxHealth());
 	}
 
 	protected void entityInit()
@@ -113,9 +110,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		super.readEntityFromNBT(tagCompund);
 		if (tagCompund.hasKey("healthTitan"))
 		{
-			setHealthD(tagCompund.getDouble("healthTitan"));
-			setMaxHealth(tagCompund.getDouble("maxHealthTitan"));
-			setMaxStamina(tagCompund.getDouble("maxStamina"));
+			setHealth(tagCompund.getDouble("healthTitan"));
 			setStamina(tagCompund.getDouble("stamina"));
 			stage = tagCompund.getInteger("stage");
 		}
@@ -123,9 +118,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 
 	public void writeEntityToNBT(NBTTagCompound tagCompound)
 	{
-		tagCompound.setDouble("healthTitan", getHealthD());
-		tagCompound.setDouble("maxHealthTitan", getMaxHealthD());
-		tagCompound.setDouble("maxStamina", getMaxStamina());
+		tagCompound.setDouble("healthTitan", getTrueHealth());
 		tagCompound.setDouble("stamina", getStamina());
 		tagCompound.setInteger("stage", stage);
 		super.writeEntityToNBT(tagCompound);
@@ -140,7 +133,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		onHitboxUpdate();
 		onDeathUpdate();
 		
-		if (isStunned)
+		if (isStunned())
 			onStunUpdate();
 		
 		if (world.isRemote && !cameraShakeDuration.isEmpty())
@@ -160,14 +153,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	public void onLivingUpdate()
 	{
 		super.onLivingUpdate();
-		
-		if (getMaxHealth() != getMaxHealthF())
-			getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(getMaxHealthF());
-		
-		if (getHealth() != getHealthF())
-			setHealth(getHealthF());
-
-		
+		boolean isStunned = isStunned();
 			isInWeb = false;
 			isAirBorne = !onGround;
 			lastDamage = 2.14748365E9F;
@@ -242,16 +228,9 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	}
 
 	/**Called upon entity creation to register hitboxes for the titan*/
-	protected List<EntityMultiPart> onHitboxCreate(List<EntityMultiPart> hitboxes)
-	{
-		hitboxes.add(new EntityMultiPart(this, "main", 0, 0, 0, width, height, true));
-		return hitboxes;
-	}
+	protected abstract List<EntityMultiPart> onHitboxCreate(List<EntityMultiPart> hitboxes);
 	
-	protected void updateAITasks()
-	{
-		
-	}
+	protected void updateAITasks() {}
 	
 	@Override
 	protected void onDeathUpdate()
@@ -260,7 +239,11 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		
 		if (world.isRemote);
 		{
-			playSound(getDeathSound(), getSoundVolume(), getSoundPitch());
+			if (deathTicks == 0)
+			{
+				shakeCamera(getSoundVolume(), 0.25F, 100);
+				playSound(getDeathSound(), getSoundVolume(), getSoundPitch());
+			}
 			performHurtAnimation();
 			spawnExplosionParticle();
 		}
@@ -287,7 +270,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 			EntityLivingBase killer = (EntityLivingBase) entity;
 			if (!world.isRemote)
 			{
-				if (getHealthD() > 0.0D)
+				if (getTrueHealth() > 0.0D)
 					TranslateUtil.sendChatAll("entity.titan.kill.cheat", getName(), killer.getName());
 				else
 					TranslateUtil.sendChatAll("entity.titan.kill", getName(), killer.getName());
@@ -328,18 +311,10 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		{
 			hitbox.onUpdate();
 			newPos = Maths.rotate(new Vec(posX, posZ), new Vec(hitbox.xOffset, hitbox.zOffset), (float) Math.toRadians(renderYawOffset));
+			hitbox.setLocationAndAngles(newPos.posX, posY + hitbox.yOffset, newPos.posZ, 0.0F, 0.0F);
 			
-			if (hitbox.partName.equals("main"))
-			{
-				hitbox.setLocationAndAngles(posX, posY + hitbox.yOffset, posZ, 0.0F, 0.0F);
-				hitbox.height = getSizeMultiplier() * 0.25F;
-				hitbox.width = getSizeMultiplier();
-				
-				if (isEntityAlive() && ticksExisted > 5)
-					onCrushingEntity(hitbox.getEntityBoundingBox());
-			}
-			else
-				hitbox.setLocationAndAngles(newPos.posX, posY + hitbox.yOffset, newPos.posZ, 0.0F, 0.0F);
+			if (hitbox.canCrush && isEntityAlive())
+				onCrushingEntity(hitbox.getEntityBoundingBox());
 		}
 	}
 	
@@ -347,13 +322,12 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	{
 		if (boundingBox == null || Maths.speedSq(motionX, motionY, motionZ) <= 0.1D) return;
 		
-		world.getEntitiesWithinAABBExcludingEntity(this, boundingBox).forEach(entity ->
+		WorldUtil.getEntities(this, boundingBox, IS_NOT_TITAN).forEach(entity ->
 		{
 			if (entity instanceof EntityLivingBase && !(entity instanceof EntityTitan) && entity.onGround)
 				entity.attackEntityFrom(DamageSource.causeMobDamage(this), 10.0F);
 		});
 	}
-	
 	
 //------- EVENTS -------\\
 	/**Sends dialog to the player depending on what index is set.<br>
@@ -434,6 +408,8 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	}
 	
 //------- GETTER/SETTER METHODS -------\\
+	public abstract double getTrueMaxHealth();
+	public abstract double getMaxStamina();
 	protected abstract SoundEvent getHurtSound(DamageSource damageSourceIn);
 	protected abstract SoundEvent getDeathSound();
 	protected abstract SoundEvent getAmbientSound();
@@ -483,58 +459,65 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		return 1000.0F;
 	}
 	
-	public final double getHealthD()
+	public final double getTrueHealth()
 	{
 		return getEntityAttribute(HEALTH).getAttributeValue();
 	}
 
-	public final float getHealthF()
+	@Override
+	public float getHealth()
 	{
-		double value = getHealthD();
-		return value > Float.MAX_VALUE ? Float.MAX_VALUE : (float) value;
+		return (float) MathHelper.clamp(getTrueHealth(), -Float.MAX_VALUE, Float.MAX_VALUE);
 	}
 
-	protected void setHealthD(double value)
+	@Override
+	public void setHealth(float health)
+    {
+        setHealth((double) health);
+    }
+	
+	protected void setHealth(double value)
 	{
-		getEntityAttribute(HEALTH).setBaseValue(MathHelper.clamp(value, 0.0D, getEntityAttribute(MAX_HEALTH).getBaseValue()));
-	}
-
-	public final double getMaxHealthD()
-	{
-		return getEntityAttribute(MAX_HEALTH).getAttributeValue();
+		double health = getTrueHealth();
+		double maxHealth = getTrueMaxHealth();
+		
+		if (maxHealth < health)
+			getEntityAttribute(HEALTH).setBaseValue(maxHealth);
+		else if (health < value)
+			getEntityAttribute(HEALTH).setBaseValue(value);
 	}
 	
-	public final float getMaxHealthF()
+	@Override
+	public float getMaxHealth()
 	{
-		double value = getMaxHealthD();
-		return value > Float.MAX_VALUE ? Float.MAX_VALUE : (float) value;
-	}
-
-	protected final void setMaxHealth(double value)
-	{
-		getEntityAttribute(MAX_HEALTH).setBaseValue(MathHelper.clamp(value, 0.0D, Double.MAX_VALUE));
+		return (float) MathHelper.clamp(getTrueMaxHealth(), -Float.MAX_VALUE, Float.MAX_VALUE);
 	}
 	
-	protected double getDamageCap()
+	public void heal(float value)
 	{
-		return ConfigMain.tab_other.enable_nightmare_mode ? getMaxHealthD() * 0.05D : Double.MAX_VALUE;
+		heal((double) value);
 	}
 	
 	public void heal(double value)
 	{
-		getEntityAttribute(HEALTH).setBaseValue(getEntityAttribute(MAX_HEALTH).getBaseValue() + MathHelper.clamp(value, 0.0D, Double.MAX_VALUE));
+		double oldHealth = getEntityAttribute(HEALTH).getBaseValue();
+		double newHealth = oldHealth + Math.abs(value);
+		
+		if (newHealth < oldHealth)
+			newHealth = getTrueMaxHealth();
+		
+		getEntityAttribute(HEALTH).setBaseValue(newHealth);
 	}
 
 	public void hurt(double value)
 	{
 		if (isEntityInvulnerable(DamageSource.GENERIC)) return;
-	
 		attackEntityFrom(DamageSource.GENERIC, (float) value);
 	}
 
 	public boolean isStunned()
 	{
-		return isStunned;
+		return getStamina() <= 0.0D;
 	}
 	
 	public int getDeathTicks()
@@ -547,19 +530,9 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		getEntityAttribute(STAMINA).setBaseValue(value);
 	}
 	
-	protected void setMaxStamina(double value)
-	{
-		getEntityAttribute(MAX_STAMINA).setBaseValue(value);
-	}
-	
 	public double getStamina()
 	{
 		return getEntityAttribute(STAMINA).getAttributeValue();
-	}
-
-	public double getMaxStamina()
-	{
-		return getEntityAttribute(MAX_STAMINA).getAttributeValue();
 	}
 	
 	protected boolean isEntityBlacklisted(Entity entity)
@@ -579,11 +552,8 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	@Override
 	public boolean isEntityAlive()
 	{
-		return getHealthD() > 0.0F;
+		return getTrueHealth() > 0.0F;
 	}
-	
-	@Override
-	public void heal(float p_70691_1_) {heal((double)p_70691_1_);}
 
 	@Override
 	public boolean attackEntityFromPart(MultiPartEntityPart entity, DamageSource source, float damage)
@@ -594,6 +564,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
+		TheTitans.info("Hi");
 		Entity attacker = source.getTrueSource();
 		boolean flag = true;
 		
@@ -605,13 +576,6 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		
 		if (world.isRemote || isEntityInvulnerable(source) || (ConfigMain.tab_other.enable_nightmare_mode ? amount <= 100.0F : false) || (attacker != null && attacker.equals(getRidingEntity())))
 			return false;
-		
-		
-		if (attacker instanceof EntityTitan)
-			amount *= 5F;
-	
-		if (amount <= 100.0F)
-			amount = 1.0F;
 		
 		previousAttackingEntity = attacker;
 		if (hurtResistantTime > maxHurtResistantTime / 2)
@@ -686,7 +650,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	{
 		if (!this.isEntityInvulnerable(source))
 		{
-			damage = (float) Math.min(ForgeHooks.onLivingHurt(this, source, damage), getDamageCap());
+			damage = (float) Math.min(ForgeHooks.onLivingHurt(this, source, damage), Double.MAX_VALUE);
 			if (damage <= 0.0F)
 			{
 				previousDamage = 0.0D;
@@ -700,13 +664,12 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 			damage = Math.max(damage - getAbsorptionAmount(), 0.0F);
 			
 			setAbsorptionAmount(getAbsorptionAmount() - (f - damage));
-			damage = (float) Math.min(ForgeHooks.onLivingDamage(this, source, damage), getDamageCap());
+			damage = (float) Math.min(ForgeHooks.onLivingDamage(this, source, damage), Double.MAX_VALUE);
 
 			if (damage > 0.0F)
 			{
-				
-				getCombatTracker().trackDamage(source, getHealthF(), damage);
-				setHealthD(getHealthD() - damage);
+				getCombatTracker().trackDamage(source, getHealth(), damage);
+				getEntityAttribute(HEALTH).setBaseValue(getTrueHealth() - damage);
 				setAbsorptionAmount(getAbsorptionAmount() - damage);
 			}
 			

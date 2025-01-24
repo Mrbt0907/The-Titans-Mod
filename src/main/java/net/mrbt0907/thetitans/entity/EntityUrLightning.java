@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.mrbt0907.thetitans.entity.titan.EntityTitan;
 import net.mrbt0907.thetitans.registries.ItemRegistry;
+import net.mrbt0907.util.mixin.CameraHandler;
 import net.mrbt0907.util.util.math.Maths;
 
 public class EntityUrLightning extends EntityGammaLightning {
@@ -20,12 +21,15 @@ public class EntityUrLightning extends EntityGammaLightning {
 	public EntityUrLightning(World world)
 	{
 		super(world);
+		if (world.isRemote)
+			CameraHandler.shakeCamera(0.35F);
 	}
 
 	public EntityUrLightning(World world, double x, double y, double z, boolean effectOnly)
 	{
 		super(world, x, y, z, effectOnly, 0F, 0F, 0F);
-		
+		if (world.isRemote)
+			CameraHandler.shakeCamera(0.35F);
 	}
 	
 	@Override
