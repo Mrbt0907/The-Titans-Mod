@@ -14,18 +14,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.mrbt0907.thetitans.entity.titan.EntityTitan;
 import net.mrbt0907.thetitans.registries.ItemRegistry;
+import net.mrbt0907.thetitans.util.DamageSources;
 import net.mrbt0907.util.mixin.CameraHandler;
 import net.mrbt0907.util.util.math.Maths;
 
 public class EntityGammaLightning extends EntityLightningBolt
 {
-	public static final DamageSource GAMMA_BOLT = new DamageSource("lightningBolt").setFireDamage().setDamageBypassesArmor().setDamageIsAbsolute();
 	private static final DataParameter<Float> COLOR_RED = EntityDataManager.<Float>createKey(EntityGammaLightning.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> COLOR_GREEN = EntityDataManager.<Float>createKey(EntityGammaLightning.class, DataSerializers.FLOAT);
 	private static final DataParameter<Float> COLOR_BLUE = EntityDataManager.<Float>createKey(EntityGammaLightning.class, DataSerializers.FLOAT);
@@ -146,7 +145,7 @@ public class EntityGammaLightning extends EntityLightningBolt
 				{
 					target.onStruckByLightning(this);
 					target.setFire(1000);
-					target.attackEntityFrom(GAMMA_BOLT, 200F);
+					target.attackEntityFrom(DamageSources.GAMMA_BOLT, 200F);
 					target.hurtResistantTime = 0;
 				}
 			}

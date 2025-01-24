@@ -576,7 +576,6 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount)
 	{
-		TheTitans.info("Hi");
 		Entity attacker = source.getTrueSource();
 		boolean flag = true;
 		

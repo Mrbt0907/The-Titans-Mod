@@ -26,6 +26,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.mrbt0907.thetitans.registries.SoundRegistry;
+import net.mrbt0907.thetitans.util.DamageSources;
 import net.mrbt0907.util.util.math.Maths;
 
 public class EntityHuskTitanProto extends EntityPreTitan
@@ -106,7 +107,7 @@ public class EntityHuskTitanProto extends EntityPreTitan
 					if (Maths.random(3000) == 0)
 						if (victim instanceof EntityLivingBase && victim.isEntityAlive() && victim != this)
 						{
-							victim.attackEntityFrom(DamageSource.LIGHTNING_BOLT.setMagicDamage().setDamageBypassesArmor(), 500F);
+							victim.attackEntityFrom(DamageSources.LIGHTNING_BOLT, 500F);
 							EntityLightningBolt entitylightning = new EntityLightningBolt(world, victim.posX, victim.posY, victim.posZ, false);
 							world.addWeatherEffect(entitylightning);
 						}

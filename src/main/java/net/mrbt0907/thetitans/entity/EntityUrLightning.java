@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.mrbt0907.thetitans.entity.titan.EntityTitan;
 import net.mrbt0907.thetitans.registries.ItemRegistry;
+import net.mrbt0907.thetitans.util.DamageSources;
 import net.mrbt0907.util.mixin.CameraHandler;
 import net.mrbt0907.util.util.math.Maths;
 
@@ -83,7 +84,7 @@ public class EntityUrLightning extends EntityGammaLightning {
 					//Obliterate
 					if (!(target instanceof EntityPlayer))
 					{
-						target.attackEntityFrom(GAMMA_BOLT, Float.MAX_VALUE - 1);
+						target.attackEntityFrom(DamageSources.GAMMA_BOLT, Float.MAX_VALUE - 1);
 						target.hurtResistantTime = 0;
 						target.setDead();
 						target.isDead = true;
@@ -93,7 +94,7 @@ public class EntityUrLightning extends EntityGammaLightning {
 							targetLiving.dead = true;
 							targetLiving.deathTime += 1;
 							targetLiving.setHealth(0F);
-							targetLiving.onDeath(GAMMA_BOLT);
+							targetLiving.onDeath(DamageSources.GAMMA_BOLT);
 						}
 						try
 						{
@@ -106,7 +107,7 @@ public class EntityUrLightning extends EntityGammaLightning {
 						
 					}
 					else
-						target.attackEntityFrom(GAMMA_BOLT, 2000F);
+						target.attackEntityFrom(DamageSources.GAMMA_BOLT, 2000F);
 				}
 			}
 	}
