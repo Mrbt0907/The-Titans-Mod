@@ -22,7 +22,6 @@ import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAmbientCreature;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -72,6 +71,14 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		public boolean apply(Entity input)
 		{
 			return !(input instanceof EntityTitan);
+		}
+	};
+	
+	public static final Predicate<Entity> IS_VALID_TARGET = new Predicate<Entity>()
+	{
+		public boolean apply(Entity input)
+		{
+			return input instanceof EntityLivingBase && input.isEntityAlive() && (input instanceof EntityPlayer ? !((EntityPlayer)input).isSpectator() : true);
 		}
 	};
 	
@@ -125,7 +132,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	}
 
 	
-//------- TICK METHODS -------\\
+	//------- TICK METHODS -------\\
 	public void onUpdate()
 	{
 		super.onUpdate();
@@ -329,7 +336,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		});
 	}
 	
-//------- EVENTS -------\\
+	//------- EVENTS -------\\
 	/**Sends dialog to the player depending on what index is set.<br>
 	 * 0 - On Spawn<br>
 	 * 1 - On Failed Spawn<br>
@@ -340,7 +347,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	public void onQuote(EntityPlayer player, int index, int subIndex) {}
 	protected abstract void dropLoot();
 	
-//------- FUNCTIONAL METHODS -------\\
+	//------- FUNCTIONAL METHODS -------\\
 	public boolean attackChoosenEntity(Entity victim, float damage, int knockbackAmount, boolean bypass)
 	{
 		DamageSource source = DamageSources.causeTitanDamage(this, bypass);
@@ -520,11 +527,6 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 		return getStamina() <= 0.0D;
 	}
 	
-	public int getDeathTicks()
-	{
-		return deathTicks;
-	}
-	
 	protected void setStamina(double value)
 	{
 		getEntityAttribute(STAMINA).setBaseValue(value);
@@ -533,6 +535,16 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	public double getStamina()
 	{
 		return getEntityAttribute(STAMINA).getAttributeValue();
+	}
+	
+	public double getAttackDamage()
+	{
+		return getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
+	}
+	
+	public double getBaseAttackDamage()
+	{
+		return getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getBaseValue();
 	}
 	
 	protected boolean isEntityBlacklisted(Entity entity)
@@ -705,11 +717,7 @@ public abstract class EntityTitan extends EntityLiving implements IEntityMultiPa
 	@Override
 	public boolean attackEntityAsMob(Entity victim)
 	{
-		float f = 1.0F;
-		int i = 1;
-		attackChoosenEntity(victim, f, i, false);
-		if ((victim instanceof EntityMob))
-		((EntityMob)victim).setRevengeTarget(this);
+		attackChoosenEntity(victim, (float) getAttackDamage(), 1, false);
 		getLookHelper().setLookPositionWithEntity(victim, 180.0F, getVerticalFaceSpeed());
 		return true;
 	}
