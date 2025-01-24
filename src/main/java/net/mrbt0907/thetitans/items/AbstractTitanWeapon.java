@@ -53,13 +53,13 @@ public class AbstractTitanWeapon extends ItemSwordEX
 	@Override
 	public boolean onAttackPre(ItemStack stack, World world, EntityPlayer attacker, Entity victim, int victimIndex, boolean shouldCancel)
 	{
-		return false;
+		return shouldCancel;
 	}
 
 	@Override
 	public boolean onAttack(ItemStack stack, World world, EntityPlayer attacker, Entity victim, int victimIndex)
 	{
-		return false;
+		return true;
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.mrbt0907.thetitans.TheTitans;
+import net.mrbt0907.thetitans.client.keybind.InputHandler;
 import net.mrbt0907.thetitans.entity.EntityMultiPart;
 import net.mrbt0907.thetitans.entity.titan.EntityTitan;
 import net.mrbt0907.util.util.TranslateUtil;
@@ -146,7 +147,10 @@ public class GameEventHandler
 	@SubscribeEvent
 	public static void tickClient(ClientTickEvent event)
 	{
-		if (event.phase == Phase.START);
+		if (event.phase == Phase.START)
+		{
+			InputHandler.onInputTick();
+		}
 	}
 	
 	@SubscribeEvent

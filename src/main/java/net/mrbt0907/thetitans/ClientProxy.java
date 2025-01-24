@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.mrbt0907.thetitans.client.entity.renders.*;
+import net.mrbt0907.thetitans.client.keybind.Keybinds;
 import net.mrbt0907.thetitans.entity.*;
 import net.mrbt0907.thetitans.entity.boss.*;
 import net.mrbt0907.thetitans.entity.god.*;
@@ -15,6 +16,7 @@ public class ClientProxy extends CommonProxy
 	public void preInit(FMLPreInitializationEvent e)
 	{
 		super.preInit(e);
+		Keybinds.preInit();
 		renderEntities();
 	}
 
@@ -28,6 +30,7 @@ public class ClientProxy extends CommonProxy
 	public void postInit(FMLPostInitializationEvent e) 
 	{
 		super.postInit(e);
+		Keybinds.postInit();
 	}
 	
 	public void renderEntities()
