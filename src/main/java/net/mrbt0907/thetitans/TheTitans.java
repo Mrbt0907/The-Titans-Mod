@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.mrbt0907.thetitans.config.ConfigMain;
 import net.mrbt0907.thetitans.event.GameEventHandler;
+import net.mrbt0907.thetitans.event.InternalEventHandler;
 import net.mrbt0907.thetitans.network.NetworkReciever;
 import net.mrbt0907.thetitans.registries.*;
 import net.mrbt0907.thetitans.world.WorldProviderVoid;
@@ -62,7 +63,8 @@ public class TheTitans
 		debug("Pre-Initialization started");
 		NetworkHandler.register(NETWORK);
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(new GameEventHandler());
+		MinecraftForge.EVENT_BUS.register(GameEventHandler.class);
+		MinecraftForge.EVENT_BUS.register(InternalEventHandler.class);
 		MinecraftForge.EVENT_BUS.register(BlockRegistry.class);
 		MinecraftForge.EVENT_BUS.register(ItemRegistry.class);
 		MinecraftForge.EVENT_BUS.register(BiomeRegistry.class);

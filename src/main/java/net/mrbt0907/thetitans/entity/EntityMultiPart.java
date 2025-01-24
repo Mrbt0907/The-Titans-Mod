@@ -8,6 +8,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MultiPartEntityPart;
+import net.minecraft.entity.projectile.EntityEvokerFangs;
+import net.minecraft.entity.projectile.EntityFireball;
+import net.minecraft.entity.projectile.EntityFishHook;
+import net.minecraft.entity.projectile.EntityShulkerBullet;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,7 +25,7 @@ public class EntityMultiPart extends MultiPartEntityPart
 	{
 		public boolean apply(Entity input)
 		{
-			return input instanceof IProjectile;
+			return input instanceof IProjectile || input instanceof EntityFireball || input instanceof EntityEvokerFangs || input instanceof EntityFishHook || input instanceof EntityShulkerBullet;
 		}
 	};
 	public final boolean canCrush;

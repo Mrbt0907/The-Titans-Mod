@@ -37,16 +37,16 @@ import net.mrbt0907.util.util.TranslateUtil;
 
 public class GameEventHandler 
 {
-	private List<UUID> renderedTitans = new ArrayList<UUID>();
+	private static List<UUID> renderedTitans = new ArrayList<UUID>();
 	
 	@SubscribeEvent
-	public void onMobSpawn(EntityJoinWorldEvent event)
+	public static void onMobSpawn(EntityJoinWorldEvent event)
 	{
 		
 	}
 	
 	@SubscribeEvent
-	public void onExplosion(Detonate event)
+	public static void onExplosion(Detonate event)
 	{
 		Iterator<Entity> itr = event.getAffectedEntities().iterator();
         while (itr.hasNext())
@@ -54,17 +54,17 @@ public class GameEventHandler
 	}
 	
 	@SubscribeEvent
-	public void onPlayerLogin(PlayerLoggedInEvent event)
+	public static void onPlayerLogin(PlayerLoggedInEvent event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void onPlayerSpawn(PlayerRespawnEvent event)
+	public static void onPlayerSpawn(PlayerRespawnEvent event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void onEntityDamaged(LivingHurtEvent event)
+	public static void onEntityDamaged(LivingHurtEvent event)
 	{
 		float damage = event.getAmount();
 		if (damage > 100.0F)
@@ -77,7 +77,7 @@ public class GameEventHandler
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onFogRender(RenderFogEvent event)
+	public static void onFogRender(RenderFogEvent event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		if (mc.world != null && (mc.world.provider.getDimension() == 0 || mc.world.provider.getDimension() == TheTitans.DIMENSION_VOID_ID))
@@ -86,7 +86,7 @@ public class GameEventHandler
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onEntityRendered(RenderLivingEvent.Pre<EntityLivingBase> event)
+	public static void onEntityRendered(RenderLivingEvent.Pre<EntityLivingBase> event)
 	{
 		EntityLivingBase entity = event.getEntity();
 		UUID uuid = entity.getUniqueID();
@@ -96,7 +96,7 @@ public class GameEventHandler
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onWorldLastRender(RenderWorldLastEvent event)
+	public static void onWorldLastRender(RenderWorldLastEvent event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		boolean shouldRender = net.minecraftforge.client.MinecraftForgeClient.getRenderPass() == -1;
@@ -122,7 +122,7 @@ public class GameEventHandler
 	}
 	
 	@SubscribeEvent
-	public void onMobDeath(LivingDeathEvent event)
+	public static void onMobDeath(LivingDeathEvent event)
 	{
 		EntityLivingBase entity = event.getEntityLiving();
 		Entity killer = event.getSource().getTrueSource();
@@ -139,38 +139,38 @@ public class GameEventHandler
 	}
 	
 	@SubscribeEvent
-	public void playerLoggedIn(PlayerLoggedInEvent event)
+	public static void playerLoggedIn(PlayerLoggedInEvent event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void tickClient(ClientTickEvent event)
+	public static void tickClient(ClientTickEvent event)
 	{
 		if (event.phase == Phase.START);
 	}
 	
 	@SubscribeEvent
-	public void tickRenderScreen(RenderTickEvent event)
+	public static void tickRenderScreen(RenderTickEvent event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void worldSave(WorldEvent.Save event)
+	public static void worldSave(WorldEvent.Save event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void worldLoad(WorldEvent.Load event)
+	public static void worldLoad(WorldEvent.Load event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void worldUnload(WorldEvent.Unload event)
+	public static void worldUnload(WorldEvent.Unload event)
 	{
 	}
 	
 	@SubscribeEvent
-	public void tickServer(ServerTickEvent event)
+	public static void tickServer(ServerTickEvent event)
 	{
 		if (event.phase == Phase.START);
 	}
